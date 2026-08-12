@@ -1,5 +1,54 @@
 ```
 
+ساختار روت پروژه
+
+CIBL/
+├── apps/
+├── services/
+├── packages/
+├── blockchain/
+├── database/
+├── infrastructure/
+├── docs/
+├── scripts/
+├── tests/
+│
+├── assets/
+│   ├── fonts/
+│   ├── icons/
+│   ├── images/
+│   ├── crypto/
+│   ├── flags/
+│   ├── logos/
+│   ├── backgrounds/
+│   ├── illustrations/
+│   └── animations/
+│
+├── .env.example
+├── .gitignore
+├── .npmrc
+├── .editorconfig
+├── .prettierrc
+├── eslint.config.js
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── turbo.json
+├── tsconfig.base.json
+├── docker-compose.yml
+├── README.md
+├── SECURITY.md
+├── CONTRIBUTING.md
+├── CHANGELOG.md
+└── LICENSE
+
+
+
+
+
+
+
+
 
 CIBL/
 │
