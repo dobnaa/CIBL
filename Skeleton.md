@@ -1,5 +1,23 @@
 ```
 
+
+
+docs/
+└── decisions/
+    ├── 0000-cibl-core-architecture-principles.md
+    ├── 0001-double-entry-ledger-engine.md
+    ├── 0002-wallet-engine.md
+    ├── 0003-custody-engine.md
+    ├── 0004-blockchain-gateway.md
+    ├── 0005-signing-engine.md
+    ├── 0006-event-driven-architecture.md
+    ├── 0007-service-boundaries.md
+    ├── 0008-security-model.md
+    └── ...
+
+
+
+
 CIBL/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
