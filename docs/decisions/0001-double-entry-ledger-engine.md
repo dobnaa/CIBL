@@ -14,6 +14,176 @@
 
 ---
 
+
+# Structure of the CIBL-double-entry-ledger-engine
+
+1. Purpose
+2. Scope
+3. Why Double Entry
+4. Accounting Principles
+5. Ledger Philosophy
+6. Design Goals
+7. Non Goals
+
+8. Core Concepts
+   Accounts
+   Journals
+   Entries
+   Transactions
+   Posting
+   Balance
+   Pending
+   Available
+   Locked
+
+9. Chart Of Accounts
+
+10. Account Types
+    Asset
+    Liability
+    Equity
+    Revenue
+    Expense
+    Off Balance
+
+11. Internal Accounts
+
+12. External Accounts
+
+13. Wallet Mapping
+
+14. Fiat Mapping
+
+15. Crypto Mapping
+
+16. Stablecoin Mapping
+
+17. CBDC Mapping
+
+18. RWA Mapping
+
+19. Merchant Mapping
+
+20. Treasury Mapping
+
+21. Liquidity Mapping
+
+22. Exchange Mapping
+
+23. Settlement Mapping
+
+24. Journal Model
+
+25. Posting Model
+
+26. Posting Rules
+
+27. Debit Credit Matrix
+
+28. Multi Asset Ledger
+
+29. Multi Currency Ledger
+
+30. FX Accounting
+
+31. Precision Rules
+
+32. Decimal Rules
+
+33. Atomic Posting
+
+34. ACID Requirements
+
+35. Idempotency
+
+36. Reversal
+
+37. Cancellation
+
+38. Compensation
+
+39. Pending Transactions
+
+40. Holds
+
+41. Reservations
+
+42. Settlement
+
+43. Clearing
+
+44. Reconciliation
+
+45. Daily Close
+
+46. End Of Day
+
+47. Month Close
+
+48. Year Close
+
+49. Audit
+
+50. Audit Trail
+
+51. Immutable Ledger
+
+52. Hash Chain
+
+53. Event Sourcing
+
+54. CQRS
+
+55. Snapshots
+
+56. Read Models
+
+57. Write Models
+
+58. Performance
+
+59. Sharding
+
+60. Partitioning
+
+61. High Availability
+
+62. Replication
+
+63. Disaster Recovery
+
+64. APIs
+
+65. Events
+
+66. Security
+
+67. Authorization
+
+68. Monitoring
+
+69. Metrics
+
+70. Alerting
+
+71. Examples
+
+72. Sequence Diagrams
+
+73. Failure Scenarios
+
+74. Recovery Scenarios
+
+75. Testing Strategy
+
+76. Migration Strategy
+
+77. Future Extensions
+
+
+
+
+
 # Ledger Account Model
 
 The Ledger Engine organizes all financial records using a hierarchical Chart of Accounts (CoA).
