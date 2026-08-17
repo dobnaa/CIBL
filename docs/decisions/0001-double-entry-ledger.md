@@ -14,6 +14,1319 @@
 
 ---
 
+# Ledger Account Model
+
+The Ledger Engine organizes all financial records using a hierarchical Chart of Accounts (CoA).
+
+Each account represents a financial container that participates in one or more double-entry transactions.
+
+An account never stores business logic. It only represents financial state.
+
+## Account Categories
+
+The Ledger Engine supports the following account categories:
+
+- Assets
+- Liabilities
+- Equity
+- Revenue
+- Expenses
+- Off-Balance Accounts
+- Memorandum Accounts
+- Clearing Accounts
+- Suspense Accounts
+
+Every account belongs to exactly one category.
+
+---
+
+# Account Hierarchy
+
+Accounts may be organized hierarchically.
+
+Example:
+
+Assets
+├── Cash
+├── Bank Accounts
+├── Fiat Wallets
+│   ├── USD
+│   ├── EUR
+│   └── GBP
+├── Crypto Wallets
+│   ├── Bitcoin
+│   ├── Ethereum
+│   └── Solana
+└── Custody Assets
+
+Hierarchy exists for reporting purposes only.
+
+Posting always occurs on leaf accounts.
+
+---
+
+# Account Structure
+
+Each account contains:
+
+- Account ID
+- Tenant ID
+- Parent Account ID
+- Account Code
+- Account Name
+- Account Type
+- Account Category
+- Asset Identifier
+- Currency
+- Status
+- Created At
+- Updated At
+- Metadata
+
+Account IDs are immutable.
+
+---
+
+# Account Status
+
+Accounts may have one of the following states:
+
+- Pending
+- Active
+- Frozen
+- Suspended
+- Closed
+- Archived
+
+Closed accounts cannot receive new postings.
+
+Historical records remain accessible indefinitely.
+
+---
+
+# Asset Isolation
+
+Each ledger account represents exactly one asset.
+
+Examples:
+
+Customer Wallet (USD)
+
+Customer Wallet (EUR)
+
+Customer Wallet (BTC)
+
+Customer Wallet (USDC)
+
+Different assets must never share the same ledger account.
+
+---
+
+# Multi-Currency Design
+
+Currencies are isolated.
+
+Examples:
+
+USD Ledger
+
+EUR Ledger
+
+GBP Ledger
+
+BTC Ledger
+
+ETH Ledger
+
+USDT Ledger
+
+Cross-currency operations require dedicated conversion journals.
+
+---
+
+# Balance Model
+
+Balances are derived from postings.
+
+The Ledger Engine does not treat balances as the primary source of truth.
+
+Balances may be materialized for performance optimization but must always be reproducible from postings.
+
+---
+
+# Available Balance
+
+Available Balance represents spendable funds.
+
+Formula:
+
+Available Balance = Book Balance − Reserved Balance
+
+Reserved amounts are maintained independently from posted balances.
+
+---
+
+# Book Balance
+
+Book Balance equals:
+
+Total Credits − Total Debits
+
+or
+
+Total Debits − Total Credits
+
+depending on account category.
+
+The accounting rule is determined by the account type.
+
+---
+
+# Pending Balance
+
+Pending balances represent transactions that have been authorized but not settled.
+
+Pending balances are excluded from finalized accounting reports.
+
+---
+
+# Reserved Balance
+
+Reserved balances are used for:
+
+- Payment Authorization
+- Exchange Orders
+- Settlement Locks
+- Withdrawal Requests
+- Compliance Holds
+- Risk Controls
+
+Reserved balances never modify posted ledger entries.
+
+---
+
+# Posting Rules
+
+Every posting must satisfy:
+
+- One asset
+- One account
+- One amount
+- One direction
+- One journal
+- Immutable state
+
+Postings cannot be updated after commitment.
+
+---
+
+# Journal Lifecycle
+
+Every journal follows the same lifecycle:
+
+Draft
+
+↓
+
+Validation
+
+↓
+
+Posting
+
+↓
+
+Committed
+
+↓
+
+Archived
+
+A committed journal cannot return to a previous state.
+
+---
+
+# Journal Validation
+
+Before commitment, the Ledger Engine validates:
+
+- Debit equals Credit
+- Valid Accounts
+- Active Accounts
+- Supported Assets
+- Tenant Isolation
+- Idempotency
+- Accounting Rules
+- Decimal Precision
+- Posting Permissions
+
+Any validation failure aborts the entire journal.
+
+---
+
+# Financial Invariants
+
+The following invariants are mandatory:
+
+- Total Debits equal Total Credits
+- Negative postings are prohibited
+- Zero-value postings are prohibited
+- Every posting belongs to exactly one journal
+- Every journal contains at least two postings
+- Journals are immutable
+- Postings are immutable
+- Assets cannot be mixed
+- Tenants cannot be mixed
+- Ledger integrity is never compromised
+
+Violation of any invariant results in transaction rejection.
+
+---
+
+# Transaction Atomicity
+
+A journal is committed using a single atomic database transaction.
+
+Either:
+
+- All postings succeed
+
+or
+
+- None are persisted
+
+Partial financial state is impossible.
+
+---
+
+# Ledger Consistency
+
+The Ledger Engine guarantees:
+
+- ACID Transactions
+- Strong Consistency
+- Deterministic Processing
+- Repeatable Reads
+- Serializable Financial State
+
+Eventual consistency is never applied to ledger writes.
+
+---
+
+# Immutable Audit Trail
+
+Every committed journal permanently records:
+
+- Creation Time
+- Author
+- Service
+- Correlation ID
+- Trace ID
+- Tenant
+- Asset
+- Metadata
+- Related Business Object
+
+Audit information is append-only.
+
+Historical records are never deleted.
+
+# Idempotency
+
+## Overview
+
+Financial operations must be executed exactly once, regardless of retries, network failures, duplicate requests, or client-side resubmissions.
+
+The Ledger Engine implements strict idempotency guarantees for every write operation.
+
+Idempotency is mandatory for:
+
+- Deposits
+- Withdrawals
+- Transfers
+- Exchange Orders
+- Settlement Operations
+- Merchant Payments
+- Refunds
+- Blockchain Synchronization
+- Treasury Operations
+- Fee Collection
+
+---
+
+# Idempotency Key
+
+Every financial command MUST include an Idempotency Key.
+
+Example:
+
+```
+Idempotency-Key:
+2ef84641-d0d3-4428-b90d-91b1de66d203
+```
+
+The key must be unique within the configured retention period.
+
+---
+
+# Idempotency Storage
+
+The Ledger stores:
+
+- Idempotency Key
+- Tenant ID
+- Operation Type
+- Request Hash
+- Journal ID
+- Processing Status
+- Response Snapshot
+- Creation Time
+- Expiration Time
+
+Duplicate requests never create new journals.
+
+---
+
+# Duplicate Request Handling
+
+If an identical request is received:
+
+1. Validate the Idempotency Key.
+2. Compare the request hash.
+3. If hashes match:
+   - Return the original response.
+4. If hashes differ:
+   - Reject the request.
+
+This prevents accidental replay with modified payloads.
+
+---
+
+# Journal Numbering
+
+Every committed journal receives a globally unique identifier.
+
+Properties:
+
+- Immutable
+- Monotonic
+- Collision-free
+- Audit-friendly
+
+Journal identifiers are never reused.
+
+---
+
+# Posting Numbering
+
+Every posting receives its own immutable identifier.
+
+Posting IDs are globally unique.
+
+A posting can never belong to multiple journals.
+
+---
+
+# Balance Calculation
+
+Balances are calculated as:
+
+```
+Opening Balance
++ Credits
+− Debits
+= Current Balance
+```
+
+Balance computation is deterministic.
+
+Running the same calculation multiple times always produces identical results.
+
+---
+
+# Balance Snapshot
+
+To improve performance, periodic balance snapshots may be generated.
+
+Snapshots are optimization artifacts only.
+
+Deleting all snapshots must never affect accounting correctness.
+
+Balances can always be reconstructed from postings.
+
+---
+
+# Snapshot Rules
+
+Snapshots:
+
+- Are immutable
+- Are versioned
+- Can be regenerated
+- Never replace ledger postings
+
+Snapshots cannot be manually edited.
+
+---
+
+# Ledger Events
+
+Every successful journal generates immutable domain events.
+
+Typical events include:
+
+- JournalCreated
+- JournalCommitted
+- PostingCreated
+- BalanceUpdated
+- ReconciliationCompleted
+- JournalReversed
+
+Events are emitted only after successful commitment.
+
+---
+
+# Event Ordering
+
+Ledger events preserve causal ordering.
+
+Within a journal:
+
+1. Journal Created
+2. Posting Created
+3. Journal Committed
+4. Balance Updated
+5. Downstream Events
+
+Consumers must process events in sequence.
+
+---
+
+# Reversal
+
+Committed journals cannot be modified.
+
+Corrections are performed using reversal journals.
+
+A reversal journal creates the opposite postings while preserving the original accounting history.
+
+---
+
+# Reversal Rules
+
+A reversal:
+
+- References the original journal
+- Mirrors every posting
+- Preserves audit history
+- Never deletes records
+- Creates a new immutable journal
+
+The original journal remains unchanged.
+
+---
+
+# Adjustment Journals
+
+Business corrections that are not exact reversals require adjustment journals.
+
+Adjustment journals:
+
+- Produce new postings
+- Reference affected journals
+- Maintain a complete audit trail
+- Preserve accounting integrity
+
+---
+
+# Reconciliation
+
+Reconciliation verifies that ledger balances remain consistent with external financial systems.
+
+Supported reconciliation targets include:
+
+- Blockchain Networks
+- Banking Systems
+- Payment Gateways
+- Custody Providers
+- Liquidity Providers
+- Exchange Engines
+- Treasury Systems
+
+---
+
+# Reconciliation Types
+
+The Ledger Engine supports:
+
+- Continuous Reconciliation
+- Scheduled Reconciliation
+- Manual Reconciliation
+- Event-Driven Reconciliation
+
+Every reconciliation generates an immutable report.
+
+---
+
+# Reconciliation Results
+
+Possible outcomes:
+
+- Matched
+- Missing
+- Unexpected
+- Amount Mismatch
+- Duplicate
+- Timing Difference
+
+Any mismatch generates an investigation record.
+
+---
+
+# Ledger Integrity Verification
+
+The platform periodically verifies:
+
+- Journal completeness
+- Posting integrity
+- Balance correctness
+- Event consistency
+- Referential integrity
+- Account hierarchy validity
+
+Integrity verification runs independently from business operations.
+
+---
+
+# Ledger Locking Strategy
+
+Financial writes use optimistic concurrency where possible.
+
+Critical operations may use pessimistic locking when strict serialization is required.
+
+The locking strategy prevents:
+
+- Lost Updates
+- Double Spending
+- Concurrent Balance Corruption
+
+---
+
+# Precision
+
+Financial amounts are never stored using floating-point types.
+
+Accepted representations include:
+
+- Decimal128
+- Arbitrary Precision Decimal
+- BigInt with Scale
+
+Floating-point arithmetic is prohibited.
+
+---
+
+# Rounding
+
+Rounding follows asset-specific precision rules.
+
+Examples:
+
+- USD → 2 decimals
+- BTC → 8 decimals
+- ETH → 18 decimals
+- USDC → 6 decimals
+
+Precision rules are defined by the Asset Registry.
+
+---
+
+# Ledger Guarantees
+
+The Ledger Engine guarantees:
+
+- Strong Consistency
+- Atomic Transactions
+- Immutability
+- Auditability
+- Deterministic Processing
+- Exactly-Once Posting
+- Financial Correctness
+- Replay Safety
+- Tenant Isolation
+- Asset Isolation
+
+These guarantees apply to every financial transaction processed by the CIBL platform.
+
+
+# Posting Engine
+
+## Overview
+
+The Posting Engine is the core execution component of the Ledger Engine.
+
+Its responsibility is to transform validated business commands into immutable accounting postings while preserving all financial invariants.
+
+The Posting Engine never performs business validation. It only executes accounting operations that have already been authorized by upstream services.
+
+Responsibilities include:
+
+- Journal Creation
+- Posting Generation
+- Balance Calculation
+- Atomic Commit
+- Event Publication
+- Audit Recording
+
+---
+
+# Posting Pipeline
+
+Every financial operation follows the same execution pipeline.
+
+```
+
+Business Command
+
+↓
+
+Authorization
+
+↓
+
+Compliance Validation
+
+↓
+
+Risk Validation
+
+↓
+
+Ledger Validation
+
+↓
+
+Journal Creation
+
+↓
+
+Posting Generation
+
+↓
+
+Atomic Commit
+
+↓
+
+Balance Update
+
+↓
+
+Ledger Events
+
+↓
+
+External Event Bus
+
+```
+
+No step may be skipped.
+
+---
+
+# Posting Lifecycle
+
+Each posting transitions through the following lifecycle:
+
+```
+
+Created
+
+↓
+
+Validated
+
+↓
+
+Persisted
+
+↓
+
+Committed
+
+↓
+
+Published
+
+↓
+
+Archived
+
+```
+
+Committed postings are immutable.
+
+---
+
+# Posting Structure
+
+Each posting contains:
+
+- Posting ID
+- Journal ID
+- Tenant ID
+- Ledger Account ID
+- Asset ID
+- Direction
+- Amount
+- Effective Time
+- Booking Time
+- Reference ID
+- Correlation ID
+- Trace ID
+- Metadata
+
+All fields except metadata are immutable.
+
+---
+
+# Posting Direction
+
+Only two posting directions exist.
+
+- Debit
+- Credit
+
+No additional posting types are allowed.
+
+Business meaning is derived from the affected account category.
+
+---
+
+# Posting Validation Rules
+
+Before persistence the Posting Engine validates:
+
+- Journal exists
+- Account exists
+- Account is active
+- Asset matches account
+- Currency matches asset
+- Decimal precision is valid
+- Amount is positive
+- Tenant ownership is valid
+- Journal remains balanced
+
+Failure of any validation rejects the complete transaction.
+
+---
+
+# Journal Builder
+
+The Journal Builder transforms business commands into accounting entries.
+
+Example:
+
+Customer deposits 100 USD.
+
+Generated journal:
+
+Debit
+
+Customer Cash Account
+
+100 USD
+
+Credit
+
+Platform Liability Account
+
+100 USD
+
+The Journal Builder contains no persistence logic.
+
+---
+
+# Journal Commit
+
+Journal commitment occurs within a single database transaction.
+
+The commit process includes:
+
+1. Insert Journal
+2. Insert Postings
+3. Update Balances
+4. Write Audit Record
+5. Publish Events
+
+Either every operation succeeds or none are persisted.
+
+---
+
+# Event Publication
+
+Ledger events are published only after successful database commitment.
+
+This guarantees that downstream consumers never receive events for failed financial operations.
+
+The recommended implementation uses the Transactional Outbox Pattern.
+
+---
+
+# Transactional Outbox
+
+Each committed journal creates an outbox record.
+
+The Event Dispatcher publishes outbox records asynchronously.
+
+Advantages include:
+
+- No lost events
+- Retry support
+- Exactly-once publication
+- Database consistency
+- Message durability
+
+---
+
+# Posting Ordering
+
+Postings inside a journal maintain deterministic ordering.
+
+Ordering is based on:
+
+1. Journal Sequence
+2. Posting Sequence
+
+Consumers must preserve ordering during replay.
+
+---
+
+# Batch Posting
+
+The Ledger Engine supports batch journal execution.
+
+A batch consists of multiple journals executed within a controlled workflow.
+
+Failure strategies include:
+
+- Fail Fast
+- Continue On Error
+- Compensating Batch
+
+The strategy is configurable by workflow.
+
+---
+
+# Cross-Service Posting
+
+External services never write directly into ledger tables.
+
+Instead they submit financial commands through the Ledger API.
+
+Example producers:
+
+- Wallet Service
+- Payment Service
+- Exchange Service
+- Settlement Service
+- Custody Service
+- Treasury Service
+- Merchant Service
+
+The Ledger remains the only accounting authority.
+
+---
+
+# Ledger API Contract
+
+The Posting Engine exposes command-oriented APIs.
+
+Examples include:
+
+- CreateJournal
+- CommitJournal
+- ReverseJournal
+- ReserveFunds
+- ReleaseFunds
+- GetBalance
+- GetJournal
+- GetPosting
+- ListTransactions
+
+The API does not expose direct table access.
+
+---
+
+# Failure Handling
+
+Failures are categorized as:
+
+- Validation Failure
+- Business Rule Failure
+- Database Failure
+- Network Failure
+- Infrastructure Failure
+- Duplicate Request
+
+Each category has deterministic retry behavior.
+
+---
+
+# Retry Policy
+
+Retryable failures include:
+
+- Temporary Database Errors
+- Network Interruptions
+- Message Broker Failures
+
+Non-retryable failures include:
+
+- Validation Errors
+- Unbalanced Journals
+- Invalid Accounts
+- Closed Accounts
+- Duplicate Journals
+
+Retries must always preserve idempotency.
+
+---
+
+# Performance Objectives
+
+Target performance goals:
+
+- Journal Validation < 5 ms
+- Posting Generation < 2 ms
+- Database Commit < 20 ms
+- Balance Query < 10 ms
+- Event Publication < 100 ms
+
+These values represent target objectives and may vary depending on deployment architecture.
+
+---
+
+# Scalability
+
+The Posting Engine is stateless.
+
+Horizontal scaling is achieved by deploying multiple identical instances behind a load balancer.
+
+No in-memory financial state may exist.
+
+Persistent state resides exclusively within the Ledger database.
+
+---
+
+# Security Considerations
+
+Every posting operation requires:
+
+- Authenticated Service Identity
+- Authorized Scope
+- Correlation ID
+- Trace ID
+- Audit Context
+- Immutable Request Log
+
+All communication must use TLS.
+
+Sensitive metadata must be encrypted at rest.
+
+---
+
+# Operational Principles
+
+The Ledger Engine is considered a Tier-0 service.
+
+Operational requirements include:
+
+- Zero data loss
+- Continuous backups
+- High availability
+- Disaster recovery support
+- Continuous integrity verification
+- Immutable audit logs
+- Full observability
+
+The Ledger Engine must remain available independently of downstream services.
+
+
+11. Journal Lifecycle
+Journal States
+DRAFT
+    │
+    ▼
+VALIDATING
+    │
+    ▼
+READY
+    │
+    ▼
+POSTING
+    │
+    ▼
+POSTED
+    │
+    ├─────────────► REVERSED
+    │
+    └─────────────► FAILED
+State Descriptions
+DRAFT
+Journal is created but not yet validated.
+No balance is affected.
+VALIDATING
+System performs:
+account existence validation
+tenant validation
+currency validation
+balance rule validation
+posting rule validation
+idempotency validation
+READY
+Journal is accepted.
+Waiting for posting.
+POSTING
+Atomic transaction begins.
+Debit/Credit rows are inserted.
+Balances are updated.
+Audit events emitted.
+POSTED
+Ledger mutation completed.
+Journal becomes immutable.
+FAILED
+Posting aborted.
+Nothing committed.
+REVERSED
+Compensating journal generated.
+Original journal preserved forever.
+12. Posting Algorithm
+Pseudo code
+CreateJournal()
+
+↓
+
+Validate()
+
+↓
+
+CheckIdempotency()
+
+↓
+
+BeginDatabaseTransaction()
+
+↓
+
+InsertJournal()
+
+↓
+
+InsertDebitPostings()
+
+↓
+
+InsertCreditPostings()
+
+↓
+
+UpdateBalances()
+
+↓
+
+CreateAuditEvent()
+
+↓
+
+Commit()
+
+↓
+
+PublishLedgerPostedEvent()
+13. Posting Rules
+Every journal must satisfy:
+Σ Debit == Σ Credit
+Every posting:
+Amount > 0
+Currency:
+Same Journal
+↓
+
+Single Currency
+Cross-currency transfers require:
+Exchange Journal
+
++
+
+Settlement Journal
+
++
+
+FX Journal
+Never mixed.
+14. Account Categories
+ASSET
+
+LIABILITY
+
+EQUITY
+
+REVENUE
+
+EXPENSE
+
+OFF_BALANCE
+Each account has immutable category.
+15. Balance Types
+Supported:
+Current Balance
+
+Available Balance
+
+Pending Balance
+
+Reserved Balance
+
+Locked Balance
+Formula
+Available
+
+=
+
+Current
+
+-
+
+Reserved
+
+-
+
+Locked
+
++
+
+PendingCredits
+
+-
+
+PendingDebits
+16. Account Status
+ACTIVE
+
+FROZEN
+
+LOCKED
+
+SUSPENDED
+
+CLOSED
+Rules
+ACTIVE
+Normal operations.
+FROZEN
+Debit prohibited.
+Credit optional.
+LOCKED
+No posting allowed.
+SUSPENDED
+Temporary administrative state.
+CLOSED
+Historical only.
+No mutation.
+17. Posting Constraints
+System validates:
+Account Exists
+Currency Matches
+Tenant Matches
+Not Closed
+Not Locked
+Positive Amount
+Balanced Journal
+Duplicate Request
+Overflow
+Precision
+Frozen Rules
+Compliance Lock
+Risk Lock
+Settlement Lock
+18. Immutable History
+Ledger never updates:
+Journal
+
+Posting
+
+Balance Snapshot
+
+Audit Record
+Updates create:
+Correction Journal
+
+or
+
+Reversal Journal
+Never overwrite.
+19. Balance Snapshots
+Snapshots generated:
+Hourly
+
+Daily
+
+Monthly
+
+Yearly
+
+On-demand
+Snapshots include:
+Balance
+
+Available
+
+Reserved
+
+Pending
+
+Hash
+
+Timestamp
+Useful for:
+auditing
+reconciliation
+reporting
+disaster recovery
+20. Idempotency
+Every mutation contains:
+Idempotency-Key
+Flow
+Incoming Request
+
+↓
+
+Lookup Key
+
+↓
+
+Exists?
+
+Yes → Return Previous Result
+
+No → Execute
+Guarantees:
+no duplicate transfer
+safe retries
+distributed consistency
+
+
+
+
+
+
+
+
+
+
+
+
 # 1. Purpose
 
 This Architecture Decision Record defines the accounting model used by CIBL.
