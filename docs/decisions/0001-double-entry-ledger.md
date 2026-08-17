@@ -45,7 +45,7 @@ Every account belongs to exactly one category.
 Accounts may be organized hierarchically.
 
 Example:
-
+```
 Assets
 ├── Cash
 ├── Bank Accounts
@@ -58,7 +58,7 @@ Assets
 │   ├── Ethereum
 │   └── Solana
 └── Custody Assets
-
+```
 Hierarchy exists for reporting purposes only.
 
 Posting always occurs on leaf accounts.
