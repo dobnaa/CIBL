@@ -6,7 +6,7 @@
 | ADR | 0000 |
 | Title | CIBL Core Architecture Principles |
 | Authors | CIBL Architecture Team |
-| Version | 2.0 |
+| Version | 1.0 |
 | Last Updated | 2026 |
 | Supersedes | Initial Architecture Draft |
 | Applies To | Entire CIBL Platform |
