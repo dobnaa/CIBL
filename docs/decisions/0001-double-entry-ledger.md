@@ -1054,7 +1054,8 @@ The Ledger Engine must remain available independently of downstream services.
 
 
 11. Journal Lifecycle
-Journal States
+# Journal States
+```
 DRAFT
     │
     ▼
@@ -1072,35 +1073,38 @@ POSTED
     ├─────────────► REVERSED
     │
     └─────────────► FAILED
-State Descriptions
+```
+# State Descriptions
 DRAFT
 Journal is created but not yet validated.
 No balance is affected.
-VALIDATING
-System performs:
-account existence validation
-tenant validation
-currency validation
-balance rule validation
-posting rule validation
-idempotency validation
-READY
+# VALIDATING
+•System performs:
+•account existence validation
+•tenant validation
+•currency validation
+•balance rule validation
+•posting rule validation
+•idempotency validation
+
+# READY
 Journal is accepted.
 Waiting for posting.
-POSTING
+# POSTING
 Atomic transaction begins.
 Debit/Credit rows are inserted.
 Balances are updated.
 Audit events emitted.
-POSTED
+# POSTED
 Ledger mutation completed.
 Journal becomes immutable.
-FAILED
+# FAILED
 Posting aborted.
 Nothing committed.
-REVERSED
+# REVERSED
 Compensating journal generated.
-Original journal preserved forever.
+Original journal preserved forever. 
+
 12. Posting Algorithm
 Pseudo code
 CreateJournal()
