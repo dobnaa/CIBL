@@ -1,7 +1,6 @@
+# ساختار درختی پروژه CIBL (v1.0 Stable)
+
 ```
-
-
-
 CIBL/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
@@ -163,6 +162,7 @@ CIBL/
 │   │   ├── 0017-observability.md
 │   │   ├── 0018-disaster-recovery.md
 │   │   ├── 0019-smart-contract-platform.md
+│   │   ├── 0020-packages-sdk-services-boundary.md
 │   │   └── README.md
 │   ├── deployment/
 │   │   ├── docker.md
@@ -223,233 +223,129 @@ CIBL/
 │   ├── observability/
 │   └── terraform/
 ├── packages/
-│   ├── api-client/
+│   ├── assets/
 │   │   ├── src/
-│   │   │   ├── assets/
+│   │   │   ├── base/
+│   │   │   │   ├── Asset.ts
+│   │   │   │   ├── FinancialAsset.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── PriceSource.ts
+│   │   │   │   ├── TokenizedAsset.ts
+│   │   │   │   └── TradableAsset.ts
+│   │   │   ├── bonds/
+│   │   │   │   ├── government/
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   └── US10Y.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── carbon-credits/
+│   │   │   │   ├── index.ts
+│   │   │   │   └── VCU.ts
+│   │   │   ├── classifications/
+│   │   │   │   ├── countries.ts
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── industries.ts
+│   │   │   │   ├── regions.ts
+│   │   │   │   ├── sectors.ts
+│   │   │   │   └── themes.ts
+│   │   │   ├── commodities/
+│   │   │   │   ├── agriculture/
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   └── WHEAT.ts
+│   │   │   │   ├── energy/
+│   │   │   │   │   ├── BRENT.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── precious-metals/
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   └── XAU.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── currencies/
 │   │   │   │   ├── cbdc/
-│   │   │   │   │   ├── digital-dirham.ts
-│   │   │   │   │   ├── digital-dollar.ts
-│   │   │   │   │   ├── digital-euro.ts
-│   │   │   │   │   ├── digital-yuan.ts
+│   │   │   │   │   ├── eCNY.ts
 │   │   │   │   │   └── index.ts
 │   │   │   │   ├── crypto/
-│   │   │   │   │   ├── bridge.ts
-│   │   │   │   │   ├── coins.ts
-│   │   │   │   │   ├── index.ts
-│   │   │   │   │   ├── nft.ts
-│   │   │   │   │   ├── staking.ts
-│   │   │   │   │   └── tokens.ts
+│   │   │   │   │   ├── BTC.ts
+│   │   │   │   │   └── index.ts
 │   │   │   │   ├── fiat/
-│   │   │   │   │   ├── currencies/
-│   │   │   │   │   │   ├── aed.ts
-│   │   │   │   │   │   ├── ars.ts
-│   │   │   │   │   │   ├── aud.ts
-│   │   │   │   │   │   ├── bhd.ts
-│   │   │   │   │   │   ├── brl.ts
-│   │   │   │   │   │   ├── cad.ts
-│   │   │   │   │   │   ├── chf.ts
-│   │   │   │   │   │   ├── clp.ts
-│   │   │   │   │   │   ├── cny.ts
-│   │   │   │   │   │   ├── cop.ts
-│   │   │   │   │   │   ├── czk.ts
-│   │   │   │   │   │   ├── dkk.ts
-│   │   │   │   │   │   ├── egp.ts
-│   │   │   │   │   │   ├── eur.ts
-│   │   │   │   │   │   ├── gbp.ts
-│   │   │   │   │   │   ├── hkd.ts
-│   │   │   │   │   │   ├── huf.ts
-│   │   │   │   │   │   ├── idr.ts
-│   │   │   │   │   │   ├── index.ts
-│   │   │   │   │   │   ├── inr.ts
-│   │   │   │   │   │   ├── irr.ts
-│   │   │   │   │   │   ├── jpy.ts
-│   │   │   │   │   │   ├── kes.ts
-│   │   │   │   │   │   ├── krw.ts
-│   │   │   │   │   │   ├── kwd.ts
-│   │   │   │   │   │   ├── mad.ts
-│   │   │   │   │   │   ├── mxn.ts
-│   │   │   │   │   │   ├── myr.ts
-│   │   │   │   │   │   ├── ngn.ts
-│   │   │   │   │   │   ├── nok.ts
-│   │   │   │   │   │   ├── nzd.ts
-│   │   │   │   │   │   ├── omr.ts
-│   │   │   │   │   │   ├── pen.ts
-│   │   │   │   │   │   ├── php.ts
-│   │   │   │   │   │   ├── pln.ts
-│   │   │   │   │   │   ├── qar.ts
-│   │   │   │   │   │   ├── ron.ts
-│   │   │   │   │   │   ├── rub.ts
-│   │   │   │   │   │   ├── sar.ts
-│   │   │   │   │   │   ├── sek.ts
-│   │   │   │   │   │   ├── sgd.ts
-│   │   │   │   │   │   ├── thb.ts
-│   │   │   │   │   │   ├── twd.ts
-│   │   │   │   │   │   ├── usd.ts
-│   │   │   │   │   │   ├── vnd.ts
-│   │   │   │   │   │   └── zar.ts
-│   │   │   │   │   ├── services/
-│   │   │   │   │   │   ├── exchange.ts
-│   │   │   │   │   │   ├── iban.ts
-│   │   │   │   │   │   ├── index.ts
-│   │   │   │   │   │   ├── liquidity.ts
-│   │   │   │   │   │   ├── routing.ts
-│   │   │   │   │   │   ├── settlement.ts
-│   │   │   │   │   │   └── swift.ts
-│   │   │   │   │   ├── accounts.ts
-│   │   │   │   │   ├── constants.ts
 │   │   │   │   │   ├── index.ts
-│   │   │   │   │   └── types.ts
-│   │   │   │   ├── rwa/
-│   │   │   │   │   ├── index.ts
-│   │   │   │   │   ├── tokenized-bonds.ts
-│   │   │   │   │   ├── tokenized-funds.ts
-│   │   │   │   │   ├── tokenized-gold.ts
-│   │   │   │   │   └── tokenized-real-estate.ts
+│   │   │   │   │   └── USD.ts
 │   │   │   │   ├── stablecoins/
-│   │   │   │   │   ├── dai.ts
-│   │   │   │   │   ├── fdusd.ts
 │   │   │   │   │   ├── index.ts
-│   │   │   │   │   ├── pyusd.ts
-│   │   │   │   │   ├── tusd.ts
-│   │   │   │   │   ├── usdc.ts
-│   │   │   │   │   └── usdt.ts
-│   │   │   │   ├── asset-catalog.ts
-│   │   │   │   ├── asset-types.ts
-│   │   │   │   ├── exchange-rates.ts
+│   │   │   │   │   └── USDC.ts
 │   │   │   │   └── index.ts
-│   │   │   ├── auth/
-│   │   │   │   ├── change-password.ts
-│   │   │   │   ├── forgot-password.ts
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── login.ts
-│   │   │   │   ├── logout.ts
-│   │   │   │   ├── refresh-token.ts
-│   │   │   │   ├── register.ts
-│   │   │   │   ├── reset-password.ts
-│   │   │   │   ├── sessions.ts
-│   │   │   │   └── two-factor.ts
-│   │   │   ├── blockchain/
-│   │   │   │   ├── arbitrum.ts
-│   │   │   │   ├── avalanche.ts
-│   │   │   │   ├── base.ts
-│   │   │   │   ├── bitcoin.ts
-│   │   │   │   ├── bsc.ts
-│   │   │   │   ├── ethereum.ts
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── optimism.ts
-│   │   │   │   ├── polygon.ts
-│   │   │   │   ├── solana.ts
-│   │   │   │   └── tron.ts
-│   │   │   ├── client/
-│   │   │   │   ├── deserializer.ts
-│   │   │   │   ├── http-client.ts
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── interceptors.ts
-│   │   │   │   ├── middleware.ts
-│   │   │   │   ├── request.ts
-│   │   │   │   ├── response.ts
-│   │   │   │   ├── rest-client.ts
-│   │   │   │   ├── retry.ts
-│   │   │   │   ├── serializer.ts
-│   │   │   │   └── websocket-client.ts
-│   │   │   ├── compliance/
-│   │   │   │   ├── aml.ts
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── kyc.ts
-│   │   │   │   ├── risk.ts
-│   │   │   │   └── sanctions.ts
-│   │   │   ├── config/
-│   │   │   │   ├── client-config.ts
-│   │   │   │   ├── environments.ts
-│   │   │   │   └── index.ts
-│   │   │   ├── constants/
-│   │   │   │   ├── endpoints.ts
-│   │   │   │   ├── headers.ts
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── timeouts.ts
-│   │   │   │   └── versions.ts
-│   │   │   ├── errors/
-│   │   │   │   ├── api-error.ts
-│   │   │   │   ├── authentication-error.ts
-│   │   │   │   ├── authorization-error.ts
-│   │   │   │   ├── blockchain-error.ts
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── network-error.ts
-│   │   │   │   ├── timeout-error.ts
-│   │   │   │   └── validation-error.ts
-│   │   │   ├── exchange/
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── market.ts
-│   │   │   │   ├── orderbook.ts
-│   │   │   │   ├── quotes.ts
-│   │   │   │   └── swap.ts
-│   │   │   ├── payments/
-│   │   │   │   ├── capture.ts
-│   │   │   │   ├── create-payment.ts
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── invoices.ts
-│   │   │   │   ├── payment-status.ts
-│   │   │   │   └── refund.ts
-│   │   │   ├── settlements/
-│   │   │   │   ├── batches.ts
-│   │   │   │   ├── index.ts
-│   │   │   │   └── settlements.ts
-│   │   │   ├── telemetry/
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── logging.ts
-│   │   │   │   ├── metrics.ts
-│   │   │   │   └── tracing.ts
-│   │   │   ├── types/
-│   │   │   │   ├── auth.ts
-│   │   │   │   ├── blockchain.ts
-│   │   │   │   ├── common.ts
+│   │   │   ├── enums/
+│   │   │   │   ├── asset-category.ts
+│   │   │   │   ├── asset-class.ts
+│   │   │   │   ├── asset-status.ts
+│   │   │   │   ├── compliance.ts
+│   │   │   │   ├── continent.ts
+│   │   │   │   ├── country.ts
+│   │   │   │   ├── currency-type.ts
 │   │   │   │   ├── exchange.ts
 │   │   │   │   ├── index.ts
-│   │   │   │   ├── payment.ts
-│   │   │   │   ├── settlement.ts
-│   │   │   │   └── wallet.ts
-│   │   │   ├── users/
+│   │   │   │   ├── industry.ts
+│   │   │   │   ├── market.ts
+│   │   │   │   ├── network.ts
+│   │   │   │   ├── payment-system.ts
+│   │   │   │   ├── sector.ts
+│   │   │   │   ├── settlement-rule.ts
+│   │   │   │   └── timezone.ts
+│   │   │   ├── equities/
+│   │   │   │   ├── AAPL.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── etfs/
 │   │   │   │   ├── index.ts
-│   │   │   │   ├── permissions.ts
-│   │   │   │   ├── preferences.ts
-│   │   │   │   ├── profile.ts
-│   │   │   │   └── verification.ts
-│   │   │   ├── utils/
-│   │   │   │   ├── formatter.ts
+│   │   │   │   └── SPY.ts
+│   │   │   ├── future-assets/
+│   │   │   │   ├── AI_COMPUTE_TOKEN.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── futures/
+│   │   │   │   ├── ES.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── indices/
 │   │   │   │   ├── index.ts
-│   │   │   │   ├── pagination.ts
-│   │   │   │   ├── parser.ts
-│   │   │   │   ├── query-builder.ts
-│   │   │   │   └── validator.ts
-│   │   │   ├── wallets/
-│   │   │   │   ├── addresses.ts
-│   │   │   │   ├── balances.ts
-│   │   │   │   ├── broadcast.ts
-│   │   │   │   ├── create-wallet.ts
-│   │   │   │   ├── estimate-fee.ts
+│   │   │   │   └── SPX.ts
+│   │   │   ├── mutual-funds/
 │   │   │   │   ├── index.ts
-│   │   │   │   ├── sign.ts
-│   │   │   │   ├── transactions.ts
-│   │   │   │   ├── transfer.ts
-│   │   │   │   └── wallet-details.ts
-│   │   │   ├── webhooks/
-│   │   │   │   ├── events.ts
+│   │   │   │   └── VTSAX.ts
+│   │   │   ├── nfts/
+│   │   │   │   ├── CRYPTOPUNK5822.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── options/
+│   │   │   │   ├── AAPL240621C200.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── renewable-energy-certificates/
 │   │   │   │   ├── index.ts
-│   │   │   │   ├── subscribe.ts
-│   │   │   │   └── unsubscribe.ts
-│   │   │   └── index.ts
+│   │   │   │   └── IREC.ts
+│   │   │   ├── rwa/
+│   │   │   │   ├── tokenized-bonds/
+│   │   │   │   │   ├── BUIDL.ts
+│   │   │   │   │   └── index.ts
+│   │   │   │   ├── tokenized-gold/
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   └── PAXG.ts
+│   │   │   │   ├── tokenized-real-estate/
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   └── TOKYO_TOWER_TOKEN.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── swaps/
+│   │   │   │   ├── index.ts
+│   │   │   │   └── USD_SOFR_SWAP.ts
+│   │   │   ├── aliases.ts
+│   │   │   ├── constants.ts
+│   │   │   ├── index.ts
+│   │   │   ├── metadata.ts
+│   │   │   ├── registry.ts
+│   │   │   ├── schema.ts
+│   │   │   ├── search.ts
+│   │   │   ├── types.ts
+│   │   │   ├── validators.ts
+│   │   │   └── version.ts
 │   │   ├── tests/
 │   │   │   ├── fixtures/
 │   │   │   │   └── .gitkeep
-│   │   │   ├── integration/
-│   │   │   │   └── .gitkeep
-│   │   │   ├── mocks/
-│   │   │   │   └── .gitkeep
-│   │   │   ├── unit/
-│   │   │   │   └── .gitkeep
-│   │   │   └── {unit,integration,mocks,fixtures}/
-│   │   ├── CHANGELOG.md
-│   │   ├── LICENSE
+│   │   │   ├── registry.test.ts
+│   │   │   ├── schema.test.ts
+│   │   │   └── validator.test.ts
 │   │   ├── package.json
 │   │   ├── README.md
 │   │   ├── tsconfig.json
@@ -527,6 +423,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -547,6 +444,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -567,6 +465,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -587,6 +486,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -607,6 +507,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -627,6 +528,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -647,6 +549,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -667,6 +570,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -687,6 +591,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -707,6 +612,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -727,6 +633,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -747,6 +654,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -767,6 +675,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -787,6 +696,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -807,6 +717,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -827,6 +738,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -847,6 +759,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -867,6 +780,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -887,6 +801,7 @@ CIBL/
 │   │   │   │   │   ├── blockchain.json
 │   │   │   │   │   ├── common.json
 │   │   │   │   │   ├── compliance.json
+│   │   │   │   │   ├── currencies.json
 │   │   │   │   │   ├── dashboard.json
 │   │   │   │   │   ├── errors.json
 │   │   │   │   │   ├── ledger.json
@@ -907,6 +822,7 @@ CIBL/
 │   │   │   │       ├── blockchain.json
 │   │   │   │       ├── common.json
 │   │   │   │       ├── compliance.json
+│   │   │   │       ├── currencies.json
 │   │   │   │       ├── dashboard.json
 │   │   │   │       ├── errors.json
 │   │   │   │       ├── ledger.json
@@ -938,24 +854,6 @@ CIBL/
 │   │   └── tsup.config.ts
 │   ├── logger/
 │   │   ├── src/
-│   │   │   └── index.ts
-│   │   ├── package.json
-│   │   ├── tsconfig.json
-│   │   └── tsup.config.ts
-│   ├── sdk/
-│   │   ├── src/
-│   │   │   ├── auth/
-│   │   │   │   └── index.ts
-│   │   │   ├── blockchain/
-│   │   │   │   └── index.ts
-│   │   │   ├── fiat/
-│   │   │   │   └── index.ts
-│   │   │   ├── payment/
-│   │   │   │   └── index.ts
-│   │   │   ├── wallet/
-│   │   │   │   └── index.ts
-│   │   │   ├── webhook/
-│   │   │   │   └── index.ts
 │   │   │   └── index.ts
 │   │   ├── package.json
 │   │   ├── tsconfig.json
@@ -1012,6 +910,239 @@ CIBL/
 │   ├── docker/
 │   ├── release/
 │   └── utils/
+├── sdk/
+│   └── client/
+│       ├── src/
+│       │   ├── assets/
+│       │   │   ├── cbdc/
+│       │   │   │   ├── digital-dirham.ts
+│       │   │   │   ├── digital-dollar.ts
+│       │   │   │   ├── digital-euro.ts
+│       │   │   │   ├── digital-yuan.ts
+│       │   │   │   └── index.ts
+│       │   │   ├── crypto/
+│       │   │   │   ├── bridge.ts
+│       │   │   │   ├── coins.ts
+│       │   │   │   ├── index.ts
+│       │   │   │   ├── nft.ts
+│       │   │   │   ├── staking.ts
+│       │   │   │   └── tokens.ts
+│       │   │   ├── fiat/
+│       │   │   │   ├── currencies/
+│       │   │   │   │   ├── aed.ts
+│       │   │   │   │   ├── ars.ts
+│       │   │   │   │   ├── aud.ts
+│       │   │   │   │   ├── bhd.ts
+│       │   │   │   │   ├── brl.ts
+│       │   │   │   │   ├── cad.ts
+│       │   │   │   │   ├── chf.ts
+│       │   │   │   │   ├── clp.ts
+│       │   │   │   │   ├── cny.ts
+│       │   │   │   │   ├── cop.ts
+│       │   │   │   │   ├── czk.ts
+│       │   │   │   │   ├── dkk.ts
+│       │   │   │   │   ├── egp.ts
+│       │   │   │   │   ├── eur.ts
+│       │   │   │   │   ├── gbp.ts
+│       │   │   │   │   ├── hkd.ts
+│       │   │   │   │   ├── huf.ts
+│       │   │   │   │   ├── idr.ts
+│       │   │   │   │   ├── index.ts
+│       │   │   │   │   ├── inr.ts
+│       │   │   │   │   ├── irr.ts
+│       │   │   │   │   ├── jpy.ts
+│       │   │   │   │   ├── kes.ts
+│       │   │   │   │   ├── krw.ts
+│       │   │   │   │   ├── kwd.ts
+│       │   │   │   │   ├── mad.ts
+│       │   │   │   │   ├── mxn.ts
+│       │   │   │   │   ├── myr.ts
+│       │   │   │   │   ├── ngn.ts
+│       │   │   │   │   ├── nok.ts
+│       │   │   │   │   ├── nzd.ts
+│       │   │   │   │   ├── omr.ts
+│       │   │   │   │   ├── pen.ts
+│       │   │   │   │   ├── php.ts
+│       │   │   │   │   ├── pln.ts
+│       │   │   │   │   ├── qar.ts
+│       │   │   │   │   ├── ron.ts
+│       │   │   │   │   ├── rub.ts
+│       │   │   │   │   ├── sar.ts
+│       │   │   │   │   ├── sek.ts
+│       │   │   │   │   ├── sgd.ts
+│       │   │   │   │   ├── thb.ts
+│       │   │   │   │   ├── twd.ts
+│       │   │   │   │   ├── usd.ts
+│       │   │   │   │   ├── vnd.ts
+│       │   │   │   │   └── zar.ts
+│       │   │   │   ├── services/
+│       │   │   │   │   ├── exchange.ts
+│       │   │   │   │   ├── iban.ts
+│       │   │   │   │   ├── index.ts
+│       │   │   │   │   ├── liquidity.ts
+│       │   │   │   │   ├── routing.ts
+│       │   │   │   │   ├── settlement.ts
+│       │   │   │   │   └── swift.ts
+│       │   │   │   ├── accounts.ts
+│       │   │   │   ├── constants.ts
+│       │   │   │   ├── index.ts
+│       │   │   │   └── types.ts
+│       │   │   ├── rwa/
+│       │   │   │   ├── index.ts
+│       │   │   │   ├── tokenized-bonds.ts
+│       │   │   │   ├── tokenized-funds.ts
+│       │   │   │   ├── tokenized-gold.ts
+│       │   │   │   └── tokenized-real-estate.ts
+│       │   │   ├── stablecoins/
+│       │   │   │   ├── dai.ts
+│       │   │   │   ├── fdusd.ts
+│       │   │   │   ├── index.ts
+│       │   │   │   ├── pyusd.ts
+│       │   │   │   ├── tusd.ts
+│       │   │   │   ├── usdc.ts
+│       │   │   │   └── usdt.ts
+│       │   │   ├── asset-catalog.ts
+│       │   │   ├── asset-types.ts
+│       │   │   ├── exchange-rates.ts
+│       │   │   └── index.ts
+│       │   ├── auth/
+│       │   │   ├── change-password.ts
+│       │   │   ├── forgot-password.ts
+│       │   │   ├── index.ts
+│       │   │   ├── login.ts
+│       │   │   ├── logout.ts
+│       │   │   ├── refresh-token.ts
+│       │   │   ├── register.ts
+│       │   │   ├── reset-password.ts
+│       │   │   ├── sessions.ts
+│       │   │   └── two-factor.ts
+│       │   ├── blockchain/
+│       │   │   ├── arbitrum.ts
+│       │   │   ├── avalanche.ts
+│       │   │   ├── base.ts
+│       │   │   ├── bitcoin.ts
+│       │   │   ├── bsc.ts
+│       │   │   ├── ethereum.ts
+│       │   │   ├── index.ts
+│       │   │   ├── optimism.ts
+│       │   │   ├── polygon.ts
+│       │   │   ├── solana.ts
+│       │   │   └── tron.ts
+│       │   ├── client/
+│       │   │   ├── deserializer.ts
+│       │   │   ├── http-client.ts
+│       │   │   ├── index.ts
+│       │   │   ├── interceptors.ts
+│       │   │   ├── middleware.ts
+│       │   │   ├── request.ts
+│       │   │   ├── response.ts
+│       │   │   ├── rest-client.ts
+│       │   │   ├── retry.ts
+│       │   │   ├── serializer.ts
+│       │   │   └── websocket-client.ts
+│       │   ├── compliance/
+│       │   │   ├── aml.ts
+│       │   │   ├── index.ts
+│       │   │   ├── kyc.ts
+│       │   │   ├── risk.ts
+│       │   │   └── sanctions.ts
+│       │   ├── config/
+│       │   │   ├── client-config.ts
+│       │   │   ├── environments.ts
+│       │   │   └── index.ts
+│       │   ├── constants/
+│       │   │   ├── endpoints.ts
+│       │   │   ├── headers.ts
+│       │   │   ├── index.ts
+│       │   │   ├── timeouts.ts
+│       │   │   └── versions.ts
+│       │   ├── errors/
+│       │   │   ├── api-error.ts
+│       │   │   ├── authentication-error.ts
+│       │   │   ├── authorization-error.ts
+│       │   │   ├── blockchain-error.ts
+│       │   │   ├── index.ts
+│       │   │   ├── network-error.ts
+│       │   │   ├── timeout-error.ts
+│       │   │   └── validation-error.ts
+│       │   ├── exchange/
+│       │   │   ├── index.ts
+│       │   │   ├── market.ts
+│       │   │   ├── orderbook.ts
+│       │   │   ├── quotes.ts
+│       │   │   └── swap.ts
+│       │   ├── payments/
+│       │   │   ├── capture.ts
+│       │   │   ├── create-payment.ts
+│       │   │   ├── index.ts
+│       │   │   ├── invoices.ts
+│       │   │   ├── payment-status.ts
+│       │   │   └── refund.ts
+│       │   ├── settlements/
+│       │   │   ├── batches.ts
+│       │   │   ├── index.ts
+│       │   │   └── settlements.ts
+│       │   ├── telemetry/
+│       │   │   ├── index.ts
+│       │   │   ├── logging.ts
+│       │   │   ├── metrics.ts
+│       │   │   └── tracing.ts
+│       │   ├── types/
+│       │   │   ├── auth.ts
+│       │   │   ├── blockchain.ts
+│       │   │   ├── common.ts
+│       │   │   ├── exchange.ts
+│       │   │   ├── index.ts
+│       │   │   ├── payment.ts
+│       │   │   ├── settlement.ts
+│       │   │   └── wallet.ts
+│       │   ├── users/
+│       │   │   ├── index.ts
+│       │   │   ├── permissions.ts
+│       │   │   ├── preferences.ts
+│       │   │   ├── profile.ts
+│       │   │   └── verification.ts
+│       │   ├── utils/
+│       │   │   ├── formatter.ts
+│       │   │   ├── index.ts
+│       │   │   ├── pagination.ts
+│       │   │   ├── parser.ts
+│       │   │   ├── query-builder.ts
+│       │   │   └── validator.ts
+│       │   ├── wallets/
+│       │   │   ├── addresses.ts
+│       │   │   ├── balances.ts
+│       │   │   ├── broadcast.ts
+│       │   │   ├── create-wallet.ts
+│       │   │   ├── estimate-fee.ts
+│       │   │   ├── index.ts
+│       │   │   ├── sign.ts
+│       │   │   ├── transactions.ts
+│       │   │   ├── transfer.ts
+│       │   │   └── wallet-details.ts
+│       │   ├── webhooks/
+│       │   │   ├── events.ts
+│       │   │   ├── index.ts
+│       │   │   ├── subscribe.ts
+│       │   │   └── unsubscribe.ts
+│       │   └── index.ts
+│       ├── tests/
+│       │   ├── fixtures/
+│       │   │   └── .gitkeep
+│       │   ├── integration/
+│       │   │   └── .gitkeep
+│       │   ├── mocks/
+│       │   │   └── .gitkeep
+│       │   ├── unit/
+│       │   │   └── .gitkeep
+│       │   └── {unit,integration,mocks,fixtures}/
+│       ├── CHANGELOG.md
+│       ├── LICENSE
+│       ├── package.json
+│       ├── README.md
+│       ├── tsconfig.json
+│       ├── tsup.config.ts
+│       └── vitest.config.ts
 ├── services/
 │   ├── address/
 │   │   ├── src/
@@ -1270,13 +1401,4 @@ CIBL/
 ├── tsconfig.node.json
 ├── tsconfig.paths.json
 └── turbo.json
-
-
-
-
-
-
-
-
-
 ```
