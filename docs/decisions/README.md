@@ -1,4 +1,4 @@
-Phase 1 — Core Architecture (همان ۲۱ ADR)
+Phase 1 — Core Architecture
 0000 Core Architecture Principles
 0001 Double Entry Ledger
 0002 Wallet Engine
