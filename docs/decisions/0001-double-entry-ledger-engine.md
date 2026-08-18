@@ -241,6 +241,1467 @@ Assets = Liabilities + Equity
 
 No exception is permitted.
 
+
+
+## Accounting Model
+
+The CIBL Ledger SHALL implement a strict double-entry accounting model.
+
+Every financial event MUST create one or more journal entries.
+
+Each journal SHALL contain two or more postings.
+
+The sum of all debit postings MUST equal the sum of all credit postings.
+
+The following invariant SHALL always hold:
+
+Σ Debit = Σ Credit
+
+A journal that violates this rule SHALL be rejected.
+
+No partial journal SHALL ever be committed.
+
+---
+
+## Ledger Hierarchy
+
+The ledger SHALL consist of the following hierarchy.
+
+Ledger
+
+└── Journal
+
+    └── Posting
+
+        └── Account
+
+Every posting belongs to exactly one journal.
+
+Every journal belongs to exactly one tenant.
+
+Every account belongs to exactly one chart of accounts.
+
+---
+
+## Chart of Accounts
+
+Each tenant SHALL own an isolated Chart of Accounts.
+
+The default account categories include:
+
+Assets
+
+Liabilities
+
+Equity
+
+Revenue
+
+Expenses
+
+Off-Balance Accounts
+
+Operational Accounts
+
+Suspense Accounts
+
+Reserve Accounts
+
+Escrow Accounts
+
+Fee Accounts
+
+Treasury Accounts
+
+Clearing Accounts
+
+Settlement Accounts
+
+Blockchain Accounts
+
+Merchant Accounts
+
+Customer Accounts
+
+Custody Accounts
+
+Liquidity Accounts
+
+Exchange Accounts
+
+---
+
+## Account Structure
+
+Each account SHALL expose the following attributes.
+
+Account ID
+
+Tenant ID
+
+Asset ID
+
+Currency
+
+Account Type
+
+Account Class
+
+Parent Account
+
+Status
+
+Normal Balance
+
+Metadata
+
+Created At
+
+Updated At
+
+Version
+
+An account SHALL never change its accounting class after creation.
+
+---
+
+## Account Types
+
+Supported account types include:
+
+Customer Wallet
+
+Merchant Wallet
+
+Treasury Wallet
+
+Liquidity Pool
+
+Custody Vault
+
+Exchange Inventory
+
+Settlement Account
+
+Fee Revenue
+
+Fee Expense
+
+Reserve
+
+Escrow
+
+Suspense
+
+Blockchain Bridge
+
+Internal Clearing
+
+External Clearing
+
+Operational
+
+System
+
+Each account type SHALL have predefined posting rules.
+
+---
+
+## Posting Model
+
+Every posting SHALL contain:
+
+Posting ID
+
+Journal ID
+
+Account ID
+
+Direction
+
+Amount
+
+Asset
+
+Currency
+
+Exchange Rate
+
+Reference
+
+Correlation ID
+
+Transaction ID
+
+Booking Date
+
+Value Date
+
+Created At
+
+Metadata
+
+Postings SHALL be immutable.
+
+Once committed they SHALL never change.
+
+Corrections SHALL always occur through compensating journals.
+
+---
+
+## Debit and Credit Rules
+
+Each account category defines its normal balance.
+
+Assets
+
+Debit increases
+
+Credit decreases
+
+Liabilities
+
+Credit increases
+
+Debit decreases
+
+Equity
+
+Credit increases
+
+Debit decreases
+
+Revenue
+
+Credit increases
+
+Debit decreases
+
+Expenses
+
+Debit increases
+
+Credit decreases
+
+The posting engine SHALL validate every operation before commit.
+
+Invalid accounting directions SHALL be rejected.
+
+---
+
+## Journal Lifecycle
+
+A journal progresses through the following lifecycle.
+
+Draft
+
+↓
+
+Validated
+
+↓
+
+Committed
+
+↓
+
+Published
+
+↓
+
+Archived
+
+Only committed journals affect balances.
+
+Draft journals have no financial effect.
+
+Archived journals remain immutable forever.
+
+---
+
+## Immutable History
+
+Historical financial data SHALL never be edited.
+
+The following operations are prohibited:
+
+DELETE Journal
+
+UPDATE Posting
+
+UPDATE Amount
+
+UPDATE Account Balance
+
+Changing historical timestamps
+
+Changing asset identifiers
+
+Changing journal references
+
+Every correction SHALL generate a brand new journal linked to the original journal.
+
+The complete financial history SHALL therefore remain intact.
+
+
+
+## Balance Engine
+
+The Balance Engine is responsible for deriving account balances from immutable
+ledger postings.
+
+Balances SHALL NOT be treated as the source of truth.
+
+Instead, balances are materialized views computed from committed postings.
+
+The ledger SHALL always be capable of reconstructing balances by replaying the
+entire journal history.
+
+This guarantees deterministic financial state reconstruction.
+
+---
+
+## Balance Types
+
+Each account SHALL maintain multiple balance dimensions.
+
+### Posted Balance
+
+Represents the total committed balance.
+
+Only committed journal entries contribute.
+
+Example
+
+Posted Balance
+
+USD 125,000.25
+
+---
+
+### Pending Balance
+
+Represents transactions awaiting completion.
+
+Examples
+
+- Card Authorization
+- Blockchain Confirmation
+- Settlement Window
+- ACH Processing
+- Wire Transfer
+
+Pending balances SHALL automatically expire or resolve.
+
+---
+
+### Available Balance
+
+Represents spendable funds.
+
+Formula
+
+Available Balance
+
+=
+
+Posted Balance
+
+-
+
+Reserved Balance
+
+-
+
+Pending Debit
+
++
+
+Pending Credit
+
+---
+
+### Reserved Balance
+
+Reserved funds cannot be spent.
+
+Reservation examples include:
+
+- Exchange Orders
+- Payment Authorization
+- Liquidity Reservation
+- OTC Trades
+- Smart Contract Escrow
+- Compliance Hold
+- Court Order
+- Treasury Allocation
+
+Reservations SHALL never modify Posted Balance.
+
+---
+
+### Locked Balance
+
+Locked funds cannot move until released.
+
+Examples
+
+AML Investigation
+
+Sanctions Review
+
+Fraud Investigation
+
+Judicial Freeze
+
+Administrative Lock
+
+Operational Freeze
+
+---
+
+### Total Balance
+
+Total Balance
+
+=
+
+Posted
+
++
+
+Pending Credit
+
+-
+
+Pending Debit
+
+Displayed for reporting only.
+
+Financial settlement SHALL use Posted Balance.
+
+---
+
+## Balance Calculation
+
+Balances SHALL be computed using immutable postings.
+
+No balance field SHALL ever become authoritative.
+
+Materialized balance caches MAY exist for performance.
+
+Whenever cache inconsistency is detected:
+
+Replay Journal
+
+↓
+
+Recalculate Balance
+
+↓
+
+Replace Cache
+
+This guarantees correctness.
+
+---
+
+## Balance Snapshot
+
+Periodic snapshots MAY be generated.
+
+Purpose
+
+- Reporting
+- Faster Recovery
+- Analytics
+- Performance Optimization
+
+Snapshots SHALL NOT replace journal history.
+
+---
+
+## Posting Engine
+
+The Posting Engine validates every accounting movement before commit.
+
+Validation includes
+
+- Balanced journal
+- Existing accounts
+- Tenant isolation
+- Currency validation
+- Asset validation
+- Decimal precision
+- Frozen account validation
+- Compliance restrictions
+- Risk restrictions
+- Duplicate detection
+- Idempotency
+
+Only after successful validation may the journal commit.
+
+---
+
+## Atomic Commit
+
+Every journal SHALL commit atomically.
+
+Valid
+
+Debit
+
+100 USD
+
+Credit
+
+100 USD
+
+Committed
+
+Invalid
+
+Debit
+
+100 USD
+
+Credit
+
+90 USD
+
+Rejected
+
+Partial commits SHALL NEVER occur.
+
+---
+
+## Posting Sequence
+
+Receive Command
+
+↓
+
+Validate
+
+↓
+
+Resolve Accounts
+
+↓
+
+Check Policies
+
+↓
+
+Validate Precision
+
+↓
+
+Validate Balance
+
+↓
+
+Generate Journal
+
+↓
+
+Generate Postings
+
+↓
+
+Commit Transaction
+
+↓
+
+Publish Events
+
+↓
+
+Update Balance Cache
+
+---
+
+## Precision Rules
+
+Every asset defines:
+
+Minimum Unit
+
+Decimal Places
+
+Maximum Precision
+
+Examples
+
+USD
+
+2 decimals
+
+BTC
+
+8 decimals
+
+ETH
+
+18 decimals
+
+USDC
+
+6 decimals
+
+XAU Token
+
+3 decimals
+
+Operations violating asset precision SHALL fail validation.
+
+---
+
+## Negative Balance Policy
+
+Accounts may individually define negative balance rules.
+
+Supported modes
+
+Never
+
+Allowed
+
+Credit Line
+
+Temporary
+
+Overdraft
+
+Collateralized
+
+Examples
+
+Customer Wallet
+
+Not Allowed
+
+Treasury Account
+
+Allowed
+
+Liquidity Provider
+
+Allowed
+
+Reserve Account
+
+Not Allowed
+
+The policy engine validates every posting.
+
+---
+
+## Multi-Asset Accounting
+
+Every posting references exactly one asset.
+
+Examples
+
+USD
+
+EUR
+
+BTC
+
+ETH
+
+USDC
+
+Digital Dollar
+
+Tokenized Gold
+
+Apple Stock Token
+
+Real Estate Token
+
+Carbon Credit
+
+Asset conversion SHALL NEVER occur inside the ledger.
+
+Conversion belongs to Exchange or FX services.
+
+The Ledger only records the accounting result.
+
+---
+
+## Cross Asset Transactions
+
+Cross-asset transactions require multiple journals.
+
+Example
+
+Customer swaps
+
+BTC
+
+↓
+
+USDC
+
+Ledger
+
+Journal A
+
+BTC Debit
+
+BTC Treasury Credit
+
+Journal B
+
+USDC Treasury Debit
+
+USDC Customer Credit
+
+Exchange pricing remains outside the Ledger.
+
+---
+
+## FX Accounting
+
+Foreign exchange operations SHALL generate independent accounting entries.
+
+Example
+
+Debit
+
+USD Account
+
+Credit
+
+FX Clearing
+
+Debit
+
+FX Clearing
+
+Credit
+
+EUR Account
+
+Realized gains and losses SHALL be posted separately.
+
+---
+
+## Journal Integrity
+
+Every journal SHALL include:
+
+Journal ID
+
+Tenant ID
+
+Transaction ID
+
+Correlation ID
+
+Request ID
+
+Actor
+
+Timestamp
+
+Business Context
+
+Source Service
+
+Ledger Version
+
+Every field becomes immutable after commit.
+
+
+## Idempotency
+
+Every financial command SHALL be idempotent.
+
+Clients MUST provide an Idempotency Key for all state-changing operations.
+
+Examples:
+
+- Create Payment
+- Transfer Funds
+- Reserve Balance
+- Release Hold
+- Settlement
+- FX Conversion
+- Withdrawal
+- Deposit
+
+The ledger SHALL persist the Idempotency Key together with:
+
+- Tenant ID
+- Request Hash
+- Response
+- Status
+- Created Timestamp
+- Expiration Timestamp
+
+Repeated requests using the same Idempotency Key SHALL return the original response without creating additional journal entries.
+
+Duplicate financial transactions are strictly prohibited.
+
+---
+
+## Concurrency Control
+
+The ledger SHALL guarantee consistency under concurrent workloads.
+
+Concurrent modifications to the same account SHALL be serialized.
+
+Supported mechanisms include:
+
+- Optimistic Locking
+- Pessimistic Locking (when required)
+- Version Checking
+- Transaction Isolation
+- Atomic Database Transactions
+
+Lost updates SHALL never occur.
+
+---
+
+## Account Versioning
+
+Every account SHALL contain a monotonically increasing version number.
+
+Example
+
+Account
+
+Version: 148
+
+↓
+
+New Posting
+
+↓
+
+Version: 149
+
+Concurrent writes using stale versions SHALL be rejected.
+
+Example
+
+Expected Version: 148
+
+Current Version: 150
+
+↓
+
+409 Conflict
+
+↓
+
+Retry Required
+
+---
+
+## Transaction Isolation
+
+Ledger transactions SHALL execute using strict database isolation.
+
+Minimum recommended isolation level:
+
+REPEATABLE READ
+
+Preferred level for critical posting operations:
+
+SERIALIZABLE
+
+Dirty Reads
+
+NOT ALLOWED
+
+Non-repeatable Reads
+
+NOT ALLOWED
+
+Phantom Reads
+
+NOT ALLOWED
+
+---
+
+## Distributed Transactions
+
+The Ledger SHALL NOT participate in distributed two-phase commit (2PC).
+
+Instead, cross-service consistency SHALL be achieved using:
+
+- Domain Events
+- Outbox Pattern
+- Inbox Pattern
+- Saga Pattern
+- Compensating Transactions
+
+The Ledger always commits first.
+
+Downstream services react asynchronously.
+
+---
+
+## Event Publishing
+
+After a successful journal commit, the Ledger SHALL publish immutable domain events.
+
+Publishing SHALL occur through the Transactional Outbox Pattern.
+
+Workflow
+
+Commit Database Transaction
+
+↓
+
+Persist Outbox Record
+
+↓
+
+Background Publisher
+
+↓
+
+Event Bus
+
+↓
+
+Consumers
+
+No event SHALL be published before the journal commit succeeds.
+
+---
+
+## Ledger Events
+
+The Ledger SHALL emit standardized events.
+
+Examples include:
+
+JournalCreated
+
+JournalCommitted
+
+PostingCreated
+
+BalanceUpdated
+
+BalanceReserved
+
+ReservationReleased
+
+AccountCreated
+
+AccountFrozen
+
+AccountUnfrozen
+
+JournalReversed
+
+CorrectionPosted
+
+LedgerSnapshotCreated
+
+ReconciliationCompleted
+
+Each event SHALL include:
+
+- Event ID
+- Event Type
+- Tenant ID
+- Correlation ID
+- Causation ID
+- Aggregate ID
+- Aggregate Version
+- Timestamp
+- Producer
+- Payload
+
+Events SHALL be immutable.
+
+---
+
+## Reversal Engine
+
+Committed journals SHALL NEVER be edited.
+
+When a correction is required, the ledger SHALL generate a compensating journal.
+
+Example
+
+Original Journal
+
+Debit Cash ............. 100 USD
+
+Credit Revenue .........100 USD
+
+Correction
+
+Debit Revenue ..........100 USD
+
+Credit Cash ............100 USD
+
+The original journal remains unchanged.
+
+The financial history remains complete.
+
+---
+
+## Correction Policy
+
+Permitted actions:
+
+✓ Reverse Journal
+
+✓ Create Adjustment Journal
+
+✓ Append Metadata
+
+Forbidden actions:
+
+✗ Delete Journal
+
+✗ Edit Posting
+
+✗ Change Amount
+
+✗ Change Timestamp
+
+✗ Change Account
+
+Financial history SHALL remain append-only.
+
+---
+
+## Reconciliation Engine
+
+The Ledger SHALL support automated reconciliation against external systems.
+
+Supported reconciliation targets:
+
+- Blockchain Networks
+- Bank Statements
+- Custody Providers
+- Payment Gateways
+- Liquidity Providers
+- Exchanges
+- Clearing Systems
+
+Differences SHALL produce reconciliation exceptions.
+
+Exceptions SHALL require investigation.
+
+---
+
+## Recovery and Replay
+
+The ledger SHALL support deterministic replay.
+
+Recovery workflow
+
+Load Snapshot
+
+↓
+
+Replay Journals
+
+↓
+
+Rebuild Balances
+
+↓
+
+Verify Integrity
+
+↓
+
+Resume Processing
+
+Replay SHALL always produce identical balances.
+
+Any mismatch SHALL trigger an integrity alert.
+
+---
+
+## Ledger API Principles
+
+The Ledger API SHALL expose only accounting operations.
+
+Examples:
+
+POST /journals
+
+POST /reversals
+
+POST /reservations
+
+POST /holds
+
+POST /accounts
+
+GET /accounts/{id}
+
+GET /balances
+
+GET /journals
+
+GET /postings
+
+Business workflows SHALL NOT manipulate balances directly.
+
+All financial state changes MUST occur through accounting commands.
+
+
+
+## Multi-Tenant Ledger
+
+The CIBL Ledger SHALL support strict tenant isolation.
+
+Each journal, posting, account, balance, reservation, and audit record SHALL belong to exactly one tenant.
+
+Every request SHALL carry a Tenant Context.
+
+Tenant Context includes:
+
+- Tenant ID
+- Organization ID
+- Environment
+- Region
+- Regulatory Domain
+
+Cross-tenant postings are strictly prohibited.
+
+Shared infrastructure SHALL NOT imply shared financial state.
+
+---
+
+## Multi-Currency Accounting
+
+The Ledger SHALL support accounting in any fiat currency.
+
+Examples include:
+
+- USD
+- EUR
+- GBP
+- CHF
+- AED
+- SAR
+- JPY
+- CNY
+- INR
+- CAD
+- AUD
+- BRL
+- MXN
+
+Each posting SHALL reference exactly one accounting currency.
+
+Foreign exchange operations SHALL be represented as independent accounting transactions.
+
+Exchange rates SHALL never be embedded into ledger logic.
+
+Rates SHALL be supplied by the FX Service.
+
+---
+
+## Multi-Asset Ledger
+
+The Ledger SHALL be asset-agnostic.
+
+Supported asset classes include:
+
+- Fiat Currency
+- Cryptocurrency
+- Stablecoin
+- CBDC
+- Security Token
+- Tokenized Bond
+- Tokenized Fund
+- Tokenized Equity
+- Tokenized Commodity
+- Tokenized Gold
+- Tokenized Real Estate
+- Carbon Credit
+- NFT
+- Loyalty Point
+- Internal Settlement Token
+
+Every asset SHALL define:
+
+- Asset ID
+- Symbol
+- Precision
+- Decimal Places
+- Settlement Rules
+- Transfer Rules
+- Compliance Policy
+- Risk Policy
+
+The Ledger SHALL never contain asset-specific business logic.
+
+---
+
+## Scalability
+
+The Ledger SHALL scale horizontally.
+
+Scalability strategies include:
+
+- Read Replicas
+- CQRS
+- Event Streaming
+- Database Partitioning
+- Sharding
+- Snapshotting
+- Materialized Views
+- Async Reporting
+- Connection Pooling
+
+The architecture SHALL support millions of journal entries per day.
+
+Read workloads SHALL never block write workloads.
+
+---
+
+## Partitioning Strategy
+
+Ledger data MAY be partitioned by:
+
+- Tenant
+- Region
+- Time Period
+- Asset
+- Organization
+
+Partitioning SHALL remain transparent to clients.
+
+Financial integrity SHALL remain identical regardless of partition layout.
+
+---
+
+## High Availability
+
+The Ledger SHALL operate in highly available configurations.
+
+Supported deployment models:
+
+- Active / Active
+- Active / Passive
+
+Automatic failover SHALL preserve committed financial data.
+
+Recovery Point Objective (RPO)
+
+0 for committed journals.
+
+Recovery Time Objective (RTO)
+
+As defined by deployment requirements.
+
+---
+
+## Disaster Recovery
+
+Recovery SHALL support:
+
+- Point-in-Time Recovery
+- Snapshot Recovery
+- Event Replay
+- Journal Replay
+
+Backups SHALL be encrypted.
+
+Recovery procedures SHALL be periodically tested.
+
+No committed journal SHALL be lost.
+
+---
+
+## Security Model
+
+The Ledger SHALL implement defense in depth.
+
+Security controls include:
+
+- Mutual TLS
+- OAuth2
+- JWT Validation
+- RBAC
+- ABAC
+- Encryption at Rest
+- Encryption in Transit
+- Secret Management
+- Key Rotation
+- Audit Logging
+
+Only authorized services MAY create accounting journals.
+
+Direct database access SHALL never bypass business validation.
+
+---
+
+## Regulatory Compliance
+
+The Ledger SHALL satisfy enterprise financial compliance requirements.
+
+Supported regulatory objectives include:
+
+- SOX
+- PCI DSS
+- ISO 27001
+- SOC 2
+- GDPR
+- FATF
+- AML
+- Travel Rule
+
+The Ledger SHALL provide complete financial traceability.
+
+Every journal SHALL be attributable to:
+
+- User
+- Organization
+- Service
+- API Request
+- Correlation ID
+- Timestamp
+
+---
+
+## Monitoring
+
+The Ledger SHALL expose operational metrics.
+
+Examples include:
+
+- Journals per Second
+- Postings per Second
+- Commit Latency
+- Replay Duration
+- Reconciliation Failures
+- Reservation Count
+- Balance Cache Hit Ratio
+- Dead Letter Queue Size
+- Event Publication Latency
+
+Metrics SHALL integrate with OpenTelemetry.
+
+---
+
+## Audit
+
+Every accounting action SHALL be auditable.
+
+Audit records SHALL include:
+
+- Who
+- What
+- When
+- Where
+- Why
+- Correlation ID
+- Previous State
+- New State
+
+Audit data SHALL remain immutable.
+
+---
+
+## Alternatives Considered
+
+### Mutable Balance Ledger
+
+Rejected.
+
+Reason:
+
+Historical reconstruction becomes unreliable.
+
+---
+
+### Single Entry Accounting
+
+Rejected.
+
+Reason:
+
+Financial inconsistency.
+
+Insufficient auditability.
+
+---
+
+### Blockchain as Internal Ledger
+
+Rejected.
+
+Reason:
+
+External blockchains cannot satisfy all internal accounting requirements.
+
+Settlement latency.
+
+Operational cost.
+
+Limited flexibility.
+
+---
+
+### Event Store Only
+
+Rejected.
+
+Reason:
+
+Accounting semantics remain insufficient without double-entry principles.
+
+---
+
+## Consequences
+
+Positive
+
+- Financial correctness
+- Deterministic replay
+- Regulatory readiness
+- Complete auditability
+- Multi-tenant isolation
+- Multi-asset support
+- High scalability
+- Vendor independence
+- Immutable history
+- Enterprise-grade reliability
+
+Trade-offs
+
+- Increased implementation complexity
+- Higher operational overhead
+- Additional storage requirements
+- More sophisticated reconciliation workflows
+
+These trade-offs are accepted because financial integrity is the highest architectural priority.
+
+---
+
+# Final Decision
+
+CIBL SHALL adopt an immutable, append-only, double-entry accounting engine as the single financial source of truth for all assets managed by the platform.
+
+Every movement of value, regardless of asset type or business domain, SHALL ultimately be represented as balanced journal postings.
+
+No service SHALL modify balances directly.
+
+Balances SHALL always be derived from immutable accounting records.
+
+This decision is permanent unless superseded by a future accepted Architecture Decision Record.
+
+
+
 ---
 
 # Fundamental Principles
