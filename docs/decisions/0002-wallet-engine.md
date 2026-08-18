@@ -322,3 +322,54 @@ Wallet identity SHALL remain stable even if blockchain addresses change.
 •Wallet Limits
 •Wallet Metadata
 •Wallet Events
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Wallet Domain Model
+Wallet Lifecycle
+Wallet State Machine
+Wallet Types
+Wallet Policies
+Wallet Limits
+Wallet Permissions
+Wallet Ownership
+Wallet Identity
+Address Management
+Address Pools
+Address Rotation
+Deposit Address Discovery
+HD Wallet Architecture (BIP32/BIP39/BIP44)
+MPC Wallet Architecture
+Smart Contract Wallets
+ERC-4337 Account Abstraction
+Multi-Chain Wallets
+Omni Wallets
+Fiat Wallets
+Crypto Wallets
+Stablecoin Wallets
+CBDC Wallets
+Tokenized Asset Wallets
+Merchant Wallets
+Treasury Wallets
+Settlement Wallets
+Escrow Wallets
+Wallet Events
+Wallet APIs
+Wallet Security
+Wallet Recovery
+Wallet Monitoring
+Wallet Performance
+Wallet Disaster Recovery
+Wallet Compliance
+Wallet Audit
