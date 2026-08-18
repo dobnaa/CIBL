@@ -716,3 +716,434 @@ ADR-0011 Asset Model
 ADR-0014 Compliance Engine
 
 ADR-0017 Observability
+
+
+
+
+
+## Tenant Isolation Model
+
+CIBL supports multiple tenant isolation strategies depending on deployment
+requirements, regulatory obligations, customer size, and operational model.
+
+### Shared Infrastructure
+
+The default deployment model shares infrastructure while logically isolating
+all tenant resources.
+
+Characteristics:
+
+- Shared Kubernetes cluster
+- Shared services
+- Shared event bus
+- Shared databases (logical isolation)
+- Shared object storage
+- Shared monitoring stack
+
+Isolation occurs at:
+
+- API layer
+- Authentication
+- Authorization
+- Database queries
+- Event routing
+- Cache keys
+- Storage prefixes
+- Encryption keys
+
+---
+
+### Database Isolation Levels
+
+CIBL supports three database isolation modes.
+
+Level 1
+
+Shared Database
+Shared Schema
+
+```
+Tenant A
+Tenant B
+Tenant C
+
+↓
+
+accounts table
+
+tenant_id
+```
+
+Lowest operational cost.
+
+Suitable for:
+
+- SMB
+- Sandbox
+- Testnet
+
+---
+
+Level 2
+
+Shared Database
+
+Dedicated Schema
+
+```
+db
+
+tenant_a.*
+
+tenant_b.*
+
+tenant_c.*
+```
+
+Recommended for:
+
+- Medium institutions
+
+---
+
+Level 3
+
+Dedicated Database
+
+```
+Tenant A
+
+Database A
+
+----------------
+
+Tenant B
+
+Database B
+```
+
+Recommended for:
+
+- Banks
+
+- Governments
+
+- CBDC
+
+- National payment infrastructure
+
+- Regulated exchanges
+
+---
+
+### Encryption Isolation
+
+Each tenant owns independent encryption material.
+
+Examples:
+
+- Data Encryption Key (DEK)
+- Key Encryption Key (KEK)
+- Vault namespace
+- HSM partition
+- Signing keys
+- JWT signing keys
+- API secrets
+
+Compromise of one tenant never compromises another tenant.
+
+---
+
+## Identity Model
+
+Every request includes:
+
+```
+Organization
+
+↓
+
+Tenant
+
+↓
+
+Workspace
+
+↓
+
+User
+
+↓
+
+Role
+
+↓
+
+Permission
+```
+
+Example
+
+```
+Global Exchange
+
+↓
+
+EU Region
+
+↓
+
+Operations
+
+↓
+
+Alice
+
+↓
+
+Treasury Manager
+```
+
+Identity information travels with every command and event.
+
+---
+
+## Tenant Context
+
+Tenant Context contains:
+
+- Tenant ID
+- Organization ID
+- Region
+- Environment
+- Currency preferences
+- Asset permissions
+- Feature flags
+- Compliance profile
+- API quotas
+- Billing plan
+- Branding
+
+Every service receives Tenant Context through middleware.
+
+---
+
+## Request Routing
+
+Incoming requests pass through:
+
+```
+Gateway
+
+↓
+
+Authentication
+
+↓
+
+Tenant Resolver
+
+↓
+
+Authorization
+
+↓
+
+Policy Engine
+
+↓
+
+Rate Limiter
+
+↓
+
+Application Service
+```
+
+No business logic executes before tenant validation.
+
+---
+
+## Event Isolation
+
+Every event includes:
+
+```
+eventId
+
+tenantId
+
+organizationId
+
+correlationId
+
+causationId
+
+timestamp
+
+actor
+
+payload
+```
+
+Consumers ignore events belonging to different tenants.
+
+---
+
+## Cache Isolation
+
+Cache keys include tenant identifiers.
+
+Example:
+
+```
+tenant:bank-a:user:123
+
+tenant:exchange-b:wallet:BTC
+
+tenant:merchant-c:invoice:9981
+```
+
+Cross-tenant cache contamination is prohibited.
+
+---
+
+## Object Storage Isolation
+
+Storage paths follow:
+
+```
+tenant-id/
+
+documents/
+
+reports/
+
+exports/
+
+statements/
+
+audit/
+
+attachments/
+```
+
+Example
+
+```
+tenant-001/reports/2026/report.pdf
+```
+
+Access requires tenant validation.
+
+---
+
+## Secret Isolation
+
+Secrets are separated by tenant.
+
+Examples:
+
+- API keys
+- Webhook secrets
+- OAuth credentials
+- Exchange credentials
+- Banking credentials
+- Signing certificates
+
+Secrets never appear in application configuration.
+
+Vault is the single source of truth.
+
+---
+
+## Queue Isolation
+
+Queues may be:
+
+- Shared
+- Tenant-specific
+- Priority queues
+- Dedicated queues
+
+Example
+
+```
+tenant-1.notifications
+
+tenant-2.notifications
+
+tenant-3.settlement
+```
+
+Large institutions may receive dedicated queues.
+
+---
+
+## Rate Limiting
+
+Rate limits are applied independently.
+
+Dimensions:
+
+- Tenant
+- API key
+- User
+- IP
+- Endpoint
+- Subscription plan
+
+Example
+
+```
+Enterprise
+
+10000 req/min
+
+Professional
+
+3000 req/min
+
+Starter
+
+500 req/min
+```
+
+---
+
+## Billing Isolation
+
+Billing tracks:
+
+- API usage
+- Storage
+- Transactions
+- Blockchain requests
+- Webhooks
+- Reports
+- Streaming connections
+- Settlement volume
+
+Each tenant receives an independent invoice.
+
+---
+
+## Audit Isolation
+
+Audit logs cannot be mixed.
+
+Every audit record contains:
+
+- tenantId
+- actor
+- IP
+- session
+- requestId
+- action
+- timestamp
+
+Immutable storage is recommended.
+
+
+
+
