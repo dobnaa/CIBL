@@ -1,3 +1,4 @@
+```
 ##ADR
 
 # Phase 1 — Core Architecture
@@ -273,3 +274,5 @@
 0133 Capacity Planning
 
 0134 Chaos Engineering
+
+```
