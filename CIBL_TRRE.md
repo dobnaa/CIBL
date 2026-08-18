@@ -1,4 +1,4 @@
-# ساختار درختی پروژه CIBL (v1.0 Stable)
+# CIBL project tree structure (v1.0 Stable)
 
 ```
 CIBL/
