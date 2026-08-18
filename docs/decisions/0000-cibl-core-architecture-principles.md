@@ -253,7 +253,934 @@ Compliance decisions influence business workflows directly.
 
 ---
 
-## 10. Cloud Native
+### 10. Asset Agnostic Platform
+
+CIBL SHALL NOT be designed around cryptocurrencies.
+
+Instead, the platform SHALL expose a unified abstraction capable of representing any financial or digital asset.
+
+Supported asset families include:
+
+• Fiat currencies
+• Stablecoins
+• Cryptocurrencies
+• CBDCs
+• Tokenized securities
+• Tokenized commodities
+• Real Estate Tokens
+• Money Market Funds
+• Treasury Bills
+• Bonds
+• Stocks
+• ETFs
+• Mutual Funds
+• Precious Metals
+• Carbon Credits
+• Loyalty Points
+• Reward Tokens
+• NFTs
+• Intellectual Property Tokens
+• Digital Documents
+• Synthetic Assets
+• Internal Settlement Assets
+
+Every asset SHALL expose a common interface.
+
+Example:
+
+Asset
+ ├── Identifier
+ ├── Precision
+ ├── Decimals
+ ├── Network
+ ├── Settlement Rules
+ ├── Compliance Rules
+ ├── Transfer Rules
+ ├── Risk Rules
+ ├── Pricing Source
+ ├── Liquidity Source
+ ├── Metadata
+
+Business services MUST never contain asset-specific logic.
+
+Instead, behavior SHALL be delegated to Asset Drivers.
+
+Benefits include:
+
+• adding new assets without platform changes
+• uniform APIs
+• easier testing
+• reduced complexity
+• future-proof architecture
+
+
+### 11. API First Design
+
+Every capability SHALL first exist as an API.
+
+The platform itself consumes the same APIs exposed to customers.
+
+There SHALL NOT exist internal hidden functionality unavailable externally unless required for operational security.
+
+API design principles include:
+
+• REST
+• WebSocket
+• Event Streaming
+• Idempotency
+• Pagination
+• Filtering
+• Versioning
+• OAuth2
+• API Keys
+• Organization Isolation
+
+Every endpoint SHALL provide:
+
+• request validation
+• response schema
+• standardized errors
+• trace identifiers
+• rate limiting
+• metrics
+
+APIs SHALL remain backward compatible whenever possible.
+
+Breaking changes require:
+
+• new version
+• migration guide
+• deprecation notice
+• sunset period
+
+SDKs SHALL be generated directly from OpenAPI specifications.
+
+
+
+### 12. Event Driven by Default
+
+Every business action produces events.
+
+Examples:
+
+PaymentCreated
+
+PaymentAuthorized
+
+PaymentCaptured
+
+WalletCreated
+
+WalletLocked
+
+AddressGenerated
+
+TransferRequested
+
+TransferBroadcasted
+
+TransferConfirmed
+
+SettlementCompleted
+
+RiskAlertRaised
+
+ComplianceReviewStarted
+
+KYCApproved
+
+OrganizationCreated
+
+APIKeyRevoked
+
+LedgerCommitted
+
+Events SHALL be immutable.
+
+Consumers SHALL never modify historical events.
+
+Replay MUST always produce identical state.
+
+Benefits include:
+
+• auditability
+
+• observability
+
+• recovery
+
+• analytics
+
+• machine learning
+
+• downstream integrations
+
+• webhooks
+
+• reporting
+
+• historical reconstruction
+
+
+
+### 13. Immutable Audit Trail
+
+Every action SHALL generate immutable audit records.
+
+Examples include:
+
+• API requests
+• authentication
+• authorization
+• ledger posting
+• blockchain broadcast
+• signature creation
+• wallet generation
+• policy updates
+• administrator actions
+• role changes
+• compliance reviews
+• risk decisions
+
+Audit logs SHALL include:
+
+Timestamp
+
+Actor
+
+Organization
+
+User
+
+Service
+
+Request ID
+
+Trace ID
+
+Origin IP
+
+Result
+
+Reason
+
+Affected Resources
+
+Previous Value
+
+New Value
+
+Digital Signature (optional)
+
+Audit data SHALL NEVER be deleted.
+
+Retention depends on regulatory requirements.
+
+
+
+### 14. Multi Region Ready
+
+CIBL SHALL support deployment across multiple geographic regions.
+
+Requirements:
+
+• Active-Active
+• Active-Passive
+• Regional Isolation
+• Data Residency
+• Sovereign Cloud
+• Independent Scaling
+
+Each region SHALL contain:
+
+API Gateway
+
+Ledger
+
+Wallet Service
+
+Blockchain Gateway
+
+Compliance
+
+Risk
+
+Settlement
+
+Notifications
+
+Observability
+
+Secrets
+
+Replication SHALL be configurable.
+
+Regional failures SHALL NOT impact unrelated regions.
+
+
+
+
+### 15. Infrastructure Independence
+
+Business logic SHALL never depend directly on infrastructure vendors.
+
+Examples:
+
+NOT
+
+PostgreSQL-specific SQL
+
+Redis-specific APIs
+
+AWS SDK
+
+Azure SDK
+
+GCP SDK
+
+Kafka SDK
+
+Instead:
+
+Repository Interfaces
+
+Message Bus Interfaces
+
+Object Storage Interfaces
+
+Secret Provider Interfaces
+
+Key Management Interfaces
+
+Notification Interfaces
+
+Infrastructure adapters SHALL implement those interfaces.
+
+Benefits:
+
+• portability
+
+• easier testing
+
+• cloud neutrality
+
+• vendor independence
+
+• simpler migrations
+
+
+
+
+### 16. Security by Default
+
+Every service SHALL assume hostile environments.
+
+Requirements:
+
+• Zero Trust
+
+• Encryption Everywhere
+
+• Least Privilege
+
+• Secure Defaults
+
+• No Public Secrets
+
+• Short-lived Credentials
+
+• Certificate Rotation
+
+• Key Rotation
+
+• Signed Requests
+
+• Replay Protection
+
+• MFA
+
+• RBAC
+
+• ABAC
+
+• Device Verification
+
+• Session Validation
+
+Security SHALL never be optional.
+
+
+
+### 17. Reliability Principles
+
+CIBL SHALL be designed for continuous operation.
+
+The platform targets financial-grade availability and fault tolerance.
+
+Core principles:
+
+• No Single Point of Failure
+
+• Automatic Recovery
+
+• Graceful Degradation
+
+• Self Healing
+
+• Stateless Services
+
+• Durable Storage
+
+• Event Replay
+
+• Retry with Exponential Backoff
+
+• Circuit Breakers
+
+• Health Monitoring
+
+• Horizontal Scaling
+
+• Rolling Deployment
+
+• Blue-Green Deployment
+
+• Canary Deployment
+
+Every critical service SHALL expose:
+
+- Liveness Endpoint
+- Readiness Endpoint
+- Startup Probe
+- Dependency Health
+- Version Information
+
+Failures SHALL be isolated.
+
+One service failure MUST NOT cascade across the platform.
+
+---
+
+Failure handling strategy
+
+Transient failures
+
+↓
+
+Retry
+
+↓
+
+Circuit Breaker
+
+↓
+
+Fallback
+
+↓
+
+Dead Letter Queue
+
+↓
+
+Manual Recovery
+
+Critical financial operations SHALL support recovery after unexpected failures without loss of consistency.
+
+---
+
+Expected Availability
+
+Core Financial Services
+
+99.99%
+
+Settlement
+
+99.99%
+
+Ledger
+
+99.999%
+
+Wallet
+
+99.99%
+
+Authentication
+
+99.99%
+
+Notification
+
+99.9%
+
+Analytics
+
+Best Effort
+
+
+
+### 18. Performance Principles
+
+Performance SHALL be considered during architecture design rather than after implementation.
+
+Objectives
+
+• Low latency
+
+• Predictable latency
+
+• High throughput
+
+• Efficient memory usage
+
+• Horizontal scalability
+
+• Minimal serialization overhead
+
+---
+
+Latency Targets
+
+Authentication
+
+<100 ms
+
+Wallet Queries
+
+<50 ms
+
+Balance Queries
+
+<20 ms
+
+Ledger Posting
+
+<100 ms
+
+Payment Authorization
+
+<300 ms
+
+Blockchain Broadcast
+
+Network dependent
+
+Settlement
+
+Near Real-Time
+
+---
+
+Performance Strategies
+
+Read optimization
+
+Caching
+
+Pagination
+
+Connection pooling
+
+Compression
+
+Batch processing
+
+Asynchronous execution
+
+Event streaming
+
+Database indexing
+
+Query optimization
+
+Efficient serialization
+
+Parallel processing
+
+Streaming APIs
+
+Large exports SHALL be asynchronous.
+
+Real-time APIs SHALL never block on long-running operations.
+
+
+
+
+### 19. Extensibility Principles
+
+CIBL SHALL be designed for continuous expansion.
+
+Adding new functionality SHALL require minimal modification to existing services.
+
+Preferred extension mechanisms include:
+
+• Plugin Architecture
+
+• Strategy Pattern
+
+• Policy Engines
+
+• Provider Interfaces
+
+• Event Subscribers
+
+• Feature Flags
+
+• Service Adapters
+
+Examples
+
+Adding a blockchain
+
+Implement BlockchainProvider
+
+Register Provider
+
+Deploy
+
+No Ledger changes required.
+
+Adding a payment rail
+
+Implement Settlement Adapter
+
+Register
+
+Activate
+
+Adding a custody provider
+
+Implement Custody Adapter
+
+Register Provider
+
+No Wallet modifications required.
+
+Closed for modification.
+
+Open for extension.
+
+
+
+
+### 20. Coding Standards
+
+All code SHALL follow consistent engineering standards.
+
+Requirements
+
+• TypeScript Strict Mode
+
+• ESLint
+
+• Prettier
+
+• Conventional Commits
+
+• Semantic Versioning
+
+• Code Reviews
+
+• Automated Testing
+
+• Static Analysis
+
+• Dependency Scanning
+
+• Secret Scanning
+
+• License Validation
+
+Naming conventions
+
+PascalCase
+
+Classes
+
+camelCase
+
+Methods
+
+UPPER_CASE
+
+Constants
+
+kebab-case
+
+Directories
+
+Every exported API SHALL include documentation.
+
+Magic values SHALL NOT appear in business logic.
+
+Business rules SHALL remain explicit and testable.
+
+
+
+### 21. Operational Principles
+
+The platform SHALL be operable at enterprise scale.
+
+Operations include
+
+Deployment
+
+Monitoring
+
+Alerting
+
+Scaling
+
+Backups
+
+Disaster Recovery
+
+Incident Response
+
+Security Response
+
+Capacity Planning
+
+Change Management
+
+Maintenance Windows
+
+Operational activities SHALL be automated whenever possible.
+
+Infrastructure SHALL be managed using Infrastructure as Code.
+
+Manual production changes are discouraged.
+
+Runbooks SHALL exist for every critical service.
+
+
+
+
+### 22. Technology Decisions
+
+Current technology stack
+
+Language
+
+TypeScript
+
+Runtime
+
+Node.js
+
+Framework
+
+NestJS
+
+Package Manager
+
+pnpm
+
+Monorepo
+
+TurboRepo
+
+Database
+
+PostgreSQL
+
+Cache
+
+Redis
+
+Messaging
+
+Kafka / NATS
+
+Object Storage
+
+S3 Compatible
+
+Observability
+
+OpenTelemetry
+
+Prometheus
+
+Grafana
+
+Loki
+
+Tempo / Jaeger
+
+Container Runtime
+
+Docker
+
+Container Orchestration
+
+Kubernetes
+
+CI/CD
+
+GitHub Actions
+
+Version Control
+
+Git
+
+API
+
+REST
+
+WebSocket
+
+Event Streaming
+
+OpenAPI
+
+Security
+
+JWT
+
+OAuth2
+
+OIDC
+
+mTLS
+
+Vault
+
+HSM Integration
+
+
+
+### 23. Architectural Constraints
+
+The following constraints are mandatory.
+
+The Ledger SHALL remain the financial source of truth.
+
+Services SHALL NOT modify another service's database.
+
+Events SHALL be immutable.
+
+APIs SHALL remain versioned.
+
+Backward compatibility SHALL be preserved whenever practical.
+
+Sensitive secrets SHALL never be stored in source code.
+
+Production configuration SHALL originate from secure secret stores.
+
+All financial operations SHALL be auditable.
+
+No service SHALL bypass authentication or authorization.
+
+Every externally visible API SHALL be documented.
+
+Every critical operation SHALL generate telemetry.
+
+
+### 24. Non-Goals
+
+The CIBL platform intentionally excludes the following responsibilities.
+
+• Consumer banking applications
+
+• Retail mobile banking UI
+
+• Core banking replacement
+
+• ERP functionality
+
+• CRM functionality
+
+• Accounting software
+
+• Blockchain consensus implementation
+
+• Cryptocurrency mining
+
+• Hardware wallet firmware
+
+• Exchange market making
+
+• Consumer social features
+
+These capabilities may integrate with CIBL but are not part of the platform architecture.
+
+
+
+
+### 25. Consequences
+
+Positive
+
+• Highly modular architecture
+
+• Independent deployment
+
+• Excellent scalability
+
+• Financial consistency
+
+• Regulatory readiness
+
+• Multi-cloud support
+
+• Multi-region deployment
+
+• Strong security
+
+• Vendor independence
+
+• Long-term maintainability
+
+Trade-offs
+
+• Increased operational complexity
+
+• More distributed infrastructure
+
+• Eventual consistency in selected workflows
+
+• Larger operational footprint
+
+• Higher observability requirements
+
+These trade-offs are accepted to achieve enterprise-grade scalability and resilience.
+
+
+
+
+## Conclusion
+
+The principles defined in this Architecture Decision Record establish the permanent architectural foundation of the CIBL Digital Asset Infrastructure Platform.
+
+Every future architectural decision SHALL comply with these principles unless explicitly superseded by a newer accepted ADR.
+
+These principles ensure that CIBL remains:
+
+- Modular
+- Secure
+- Event-Driven
+- Financially Consistent
+- Cloud Native
+- Multi-Tenant
+- Extensible
+- Vendor Neutral
+- Regulatory Ready
+- Globally Scalable
+
+This document is the architectural constitution of the CIBL platform.
+
+
+
+
+
+
+
+
+
+##  Cloud Native
 
 Every service must support:
 
