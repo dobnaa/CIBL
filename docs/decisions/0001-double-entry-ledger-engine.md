@@ -180,8 +180,113 @@
 
 77. Future Extensions
 
+---
 
+# Context
 
+The General Ledger is the financial heart of the CIBL Digital Asset Infrastructure Platform.
+
+Every movement of value across every supported asset class MUST ultimately be represented as balanced accounting entries within the ledger.
+
+Unlike blockchain ledgers, which record asset ownership on external networks, the CIBL Ledger represents the authoritative internal financial state of the platform.
+
+The Ledger is therefore the single financial source of truth for:
+
+- Wallet balances
+- Custody balances
+- Merchant balances
+- Customer balances
+- Treasury balances
+- Exchange balances
+- Liquidity providers
+- Settlement accounts
+- Fee accounts
+- Revenue accounts
+- Suspense accounts
+- Reserve accounts
+- Escrow accounts
+- Clearing accounts
+
+No component is allowed to mutate balances directly.
+
+Balances are derived exclusively from immutable postings.
+
+---
+
+# Decision
+
+CIBL SHALL implement a financial-grade immutable Double Entry Ledger.
+
+The ledger SHALL satisfy:
+
+- Atomicity
+- Consistency
+- Durability
+- Immutability
+- Auditability
+- Deterministic Replay
+- Idempotency
+- Multi-Tenant Isolation
+- Multi-Asset Support
+
+Every financial operation SHALL generate balanced journal entries.
+
+The accounting equation MUST always hold.
+
+```
+
+Assets = Liabilities + Equity
+
+```
+
+No exception is permitted.
+
+---
+
+# Fundamental Principles
+
+The ledger SHALL follow these immutable principles.
+
+1. No mutable balances
+
+2. No balance overwrite
+
+3. No direct balance updates
+
+4. No account deletion
+
+5. No journal modification
+
+6. No posting modification
+
+7. No historical mutation
+
+8. Every transaction balanced
+
+9. Every transaction auditable
+
+10. Every transaction replayable
+
+---
+
+# Ledger Responsibilities
+
+The Ledger owns only financial state.
+
+It SHALL NOT perform:
+
+- Blockchain communication
+- Wallet generation
+- Signature generation
+- KYC
+- AML
+- Pricing
+- Exchange execution
+- Risk scoring
+
+Instead, other services submit accounting commands.
+
+The ledger validates and commits them.
 
 
 # Ledger Account Model
