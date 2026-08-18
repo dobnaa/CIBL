@@ -286,3 +286,488 @@ Escrow Units
 Fee Tokens
 
 Reward Tokens
+
+
+
+# Asset Identity
+Every asset receives a globally unique Asset ID.
+
+Example
+
+asset_usd
+
+asset_btc
+
+asset_eth
+
+asset_gold
+
+asset_real_estate
+
+asset_cbdc_usd
+
+asset_stock_aapl
+
+Human readable codes are never primary identifiers.
+
+# Asset Metadata
+Each asset contains metadata.
+
+Asset ID
+
+Symbol
+
+Display Name
+
+Decimals
+
+Category
+
+Issuer
+
+Country
+
+Jurisdiction
+
+Blockchain
+
+Native Network
+
+Settlement Network
+
+Price Source
+
+Precision
+
+Rounding Rules
+
+Compliance Flags
+
+Liquidity Tier
+
+Risk Tier
+
+Tradability
+
+Transferability
+
+Programmability
+
+Token Standard
+
+Contract Address
+
+Status
+
+# Asset Status
+Draft
+
+Pending
+
+Active
+
+Paused
+
+Frozen
+
+Deprecated
+
+Archived
+
+# Asset Types
+Native Asset
+
+Issued Asset
+
+Wrapped Asset
+
+Synthetic Asset
+
+Tokenized Asset
+
+Internal Ledger Asset
+
+# Asset Precision
+
+Each asset defines:
+
+Display Precision
+
+Accounting Precision
+
+Settlement Precision
+
+Trading Precision
+
+Pricing Precision
+
+
+
+
+
+Example
+
+
+BTC
+
+Display:
+8
+
+Accounting:
+18
+
+Settlement:
+8
+
+Pricing:
+8
+
+
+
+
+# Asset Lifecycle
+
+Create
+
+↓
+
+Validate
+
+↓
+
+Approve
+
+↓
+
+Activate
+
+↓
+
+Available
+
+↓
+
+Suspended
+
+↓
+
+Retired
+
+
+# Asset Registry
+Asset Registry is the single source of truth.
+Responsibilities
+register assets
+update metadata
+activate assets
+deactivate assets
+manage supported chains
+manage issuers
+expose APIs
+
+
+
+
+
+# Multi-chain Assets
+Example
+USDC
+Ethereum
+Polygon
+Base
+Arbitrum
+Solana
+Avalanche
+Optimism
+The Asset Registry stores all chain-specific representations under one logical asset.
+
+
+
+
+
+# Wrapped Assets
+Example
+WBTC
+Underlying Asset:
+Bitcoin
+Wrapper:
+ERC20
+Network:
+Ethereum
+Relationship stored explicitly.
+
+
+
+
+
+# Synthetic Assets
+Example
+Synthetic Gold
+Synthetic Oil
+Synthetic Tesla
+Synthetic S&P500
+Pricing comes from Oracle Services.
+
+
+
+
+
+# Tokenized Assets
+Supported
+Government Bonds
+Corporate Bonds
+Funds
+Gold
+Real Estate
+Invoices
+Trade Finance
+Receivables
+Carbon Credits
+Private Equity
+Infrastructure Projects
+
+
+
+
+# Asset Capabilities
+Each asset declares supported operations.
+
+Deposit
+
+Withdraw
+
+Transfer
+
+Trade
+
+Swap
+
+Stake
+
+Bridge
+
+Mint
+
+Burn
+
+Freeze
+
+Hold
+
+Escrow
+
+Settlement
+
+Collateral
+
+Borrow
+
+Lend
+
+
+Unsupported operations are rejected automatically.
+
+
+
+
+
+
+
+# Asset Risk Profile
+Each asset contains:
+
+
+
+Risk Score
+
+Liquidity Score
+
+Volatility
+
+AML Category
+
+Sanction Exposure
+
+Country Restrictions
+
+Institutional Only Flag
+
+Retail Availability
+
+Maximum Position
+
+Settlement Window
+
+
+
+
+
+# Asset Pricing
+Assets may receive pricing from:
+
+
+Internal Market
+
+Exchange API
+
+FX API
+
+Oracle
+
+External Provider
+
+Manual Pricing
+
+Reference Index
+
+
+
+
+
+# Asset Relationships
+Examples
+
+USDC
+
+backed_by
+
+USD
+
+------------
+
+Wrapped BTC
+
+wraps
+
+Bitcoin
+
+------------
+
+Digital Dollar
+
+issued_by
+
+Central Bank
+
+------------
+
+Gold Token
+
+represents
+
+Physical Gold
+
+
+
+
+
+
+# Asset Versioning
+Assets are immutable identifiers.
+Metadata evolves through versions.
+Old transactions always reference historical metadata.
+
+
+
+
+
+# Ledger Integration
+Ledger stores only
+Asset ID
+Amount
+Precision
+Ledger never stores asset metadata.
+
+
+
+
+
+# Wallet Integration
+Wallets contain balances by Asset ID.
+No asset-specific wallet implementation exists.
+
+
+
+
+
+
+# Settlement Integration
+Settlement validates:
+Supported Asset
+Settlement Window
+Liquidity
+Compliance
+Jurisdiction
+Network Availability
+
+
+
+
+
+# Exchange Integration
+Exchange discovers
+Tradable Assets
+Supported Pairs
+Liquidity Pools
+Tick Size
+Minimum Order
+Maximum Order
+
+
+
+
+
+# Compliance Integration
+Each asset defines:
+KYC Level
+AML Rules
+Sanctions Requirements
+Travel Rule Requirement
+Restricted Countries
+PEP Requirement
+Source of Funds Requirement
+
+
+
+
+
+
+# Risk Integration
+Risk Engine consumes:
+Asset Volatility
+Liquidity
+Historical Risk
+Issuer Rating
+Settlement Risk
+Operational Risk
+Counterparty Risk
+
+
+
+
+
+# Design Consequences
+•Advantages
+•One unified asset model
+•Unlimited asset expansion
+•Easy onboarding of new assets
+•Consistent APIs
+•Chain-independent architecture
+•Simplified Ledger
+•Simplified Wallet
+•Better Compliance
+•Better Settlement
+•Better Exchange Integration
+•Future-proof platform
+
+
+Trade-offs
+
+
+•Larger metadata registry
+•Additional registry management
+•More governance requirements
+Accepted.
+
+
+
