@@ -1,4 +1,7 @@
-Phase 1 — Core Architecture
+##ADR
+
+# Phase 1 — Core Architecture
+
 0000 Core Architecture Principles
 0001 Double Entry Ledger
 0002 Wallet Engine
@@ -20,7 +23,9 @@ Phase 1 — Core Architecture
 0018 Disaster Recovery
 0019 Smart Contract Platform
 0020 Packages SDK Services Boundary
-Phase 2 — Banking Platform
+
+# Phase 2 — Banking Platform
+
 0021 Banking Core
 
 0022 Account Engine
@@ -50,7 +55,9 @@ Phase 2 — Banking Platform
 0034 Financial Reporting
 
 0035 Accounting Period Close
-Phase 3 — Digital Asset Platform
+
+# Phase 3 — Digital Asset Platform
+
 0036 Crypto Asset Model
 
 0037 Stablecoin Platform
@@ -74,7 +81,9 @@ Phase 3 — Digital Asset Platform
 0046 Asset Registry
 
 0047 Asset Lifecycle
-Phase 4 — Exchange Platform
+
+# Phase 4 — Exchange Platform
+
 0048 Exchange Core
 
 0049 Order Matching
@@ -93,10 +102,12 @@ Phase 4 — Exchange Platform
 
 0056 OTC Trading
 
-0057 Margin Trading (Future)
+0057 Margin Trading 
 
-0058 Derivatives (Future)
-Phase 5 — Wallet as a Service
+0058 Derivatives 
+
+# Phase 5 — Wallet as a Service
+
 0059 Wallet as a Service
 
 0060 HD Wallets
@@ -116,7 +127,9 @@ Phase 5 — Wallet as a Service
 0067 Address Discovery
 
 0068 Address Rotation
-Phase 6 — Custody Platform
+
+# Phase 6 — Custody Platform
+
 0069 Hot Wallet
 
 0070 Warm Wallet
@@ -134,7 +147,9 @@ Phase 6 — Custody Platform
 0076 Approval Workflow
 
 0077 Recovery Procedures
-Phase 7 — Payments
+
+# Phase 7 — Payments
+
 0078 Payment Gateway
 
 0079 Checkout API
@@ -152,7 +167,9 @@ Phase 7 — Payments
 0085 Refund Engine
 
 0086 Chargeback Engine
-Phase 8 — Platform
+
+# Phase 8 — Platform
+
 0087 Workflow Engine
 
 0088 Notification Platform
@@ -170,7 +187,9 @@ Phase 8 — Platform
 0094 Search
 
 0095 Document Storage
-Phase 9 — Infrastructure
+
+# Phase 9 — Infrastructure
+
 0096 Database Strategy
 
 0097 Caching
@@ -192,7 +211,9 @@ Phase 9 — Infrastructure
 0105 Secrets Management
 
 0106 Feature Flags
-Phase 10 — Security
+
+# Phase 10 — Security
+
 0107 IAM
 
 0108 OAuth2
@@ -212,7 +233,9 @@ Phase 10 — Security
 0115 Compliance Logging
 
 0116 Incident Response
-Phase 11 — APIs
+
+# Phase 11 — APIs
+
 0117 REST API
 
 0118 GraphQL
@@ -230,7 +253,9 @@ Phase 11 — APIs
 0124 API Gateway
 
 0125 API Keys
-Phase 12 — Operations
+
+# Phase 12 — Operations
+
 0126 Monitoring
 
 0127 Metrics
